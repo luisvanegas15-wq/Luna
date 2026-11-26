@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Luna · LV Studio</title>
+<meta name="theme-color" content="#7C3AED">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7FF; --card:#FFFFFF; --ink:#2E1065; --muted:#7A6E93; --line:#EDE7F6;
+    --period:#E11D74; --period-soft:#FCE7F3; --pred:#F472B6; --fertile:#DDD6FE; --ovu:#7C3AED;
+    --accent:#7C3AED;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding-bottom:40px}
+  .wrap{max-width:480px;margin:0 auto;padding:18px 16px}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#C084FC,#7C3AED);display:grid;place-items:center;color:#fff;font-size:20px;position:relative}
+  .logo::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#FACC15}
+  .brand h1{font-size:20px;font-weight:700;line-height:1}
+  .brand small{font-size:11px;color:var(--muted)}
+  .hello{font-size:13px;color:var(--muted)}
+
+  .card{background:var(--card);border-radius:22px;padding:18px;box-shadow:0 6px 24px rgba(124,58,237,.08);margin-bottom:14px}
+  .hero{display:flex;gap:16px;align-items:center}
+  .ring{position:relative;width:132px;height:132px;flex:none}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .ring .in b{font-size:30px;line-height:1}
+  .ring .in span{font-size:11px;color:var(--muted)}
+  .hero .info h2{font-size:16px;margin-bottom:4px}
+  .phase{display:inline-block;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin-bottom:8px}
+  .hero .info p{font-size:13px;color:var(--muted);line-height:1.45}
+  .hero .info p b{color:var(--ink)}
+
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .btn{border:none;border-radius:16px;padding:14px 10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
+  .btn.main{background:var(--period);color:#fff}
+  .btn.alt{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  .btn.full{width:100%;background:var(--accent);color:#fff}
+
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .cal-head h3{font-size:16px}
+  .nav{border:none;background:var(--bg);width:36px;height:36px;border-radius:12px;font-size:18px;color:var(--ink);cursor:pointer}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+  .dow{font-size:11px;color:var(--muted);font-weight:600;padding-bottom:4px}
+  .day{aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font-size:13px;cursor:pointer;position:relative;border:2px solid transparent}
+  .day.out{visibility:hidden}
+  .day.period{background:var(--period);color:#fff;font-weight:600}
+  .day.pred{border:2px dashed var(--pred);color:var(--period)}
+  .day.fertile{background:var(--fertile)}
+  .day.ovu{background:var(--ovu);color:#fff;font-weight:600}
+  .day.today{outline:2px solid var(--ink);outline-offset:1px}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:11px;color:var(--muted)}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-2px}
+  .tip{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
+
+  .note{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;padding:6px 10px}
+
+  /* Bienvenida */
+  .overlay{position:fixed;inset:0;background:rgba(46,16,101,.45);display:none;align-items:flex-end;justify-content:center;z-index:10}
+  .overlay.show{display:flex}
+  .sheet{background:#fff;width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:24px 20px 30px}
+  .sheet h2{font-size:20px;margin-bottom:6px}
+  .sheet p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+  .field input{width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:15px;color:var(--ink)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;font-size:13px;opacity:0;transition:.3s;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">☾</div>
+      <div><h1>Luna</h1><small>LV Studio Apps</small></div>
+    </div>
+    <div class="hello" id="hoy"></div>
+  </header>
+
+  <section class="card hero">
+    <div class="ring">
+      <svg width="132" height="132" viewBox="0 0 132 132">
+        <circle cx="66" cy="66" r="56" fill="none" stroke="#F3E8FF" stroke-width="12"/>
+        <circle id="arc" cx="66" cy="66" r="56" fill="none" stroke="#E11D74" stroke-width="12" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352"/>
+      </svg>
+      <div class="in"><span>Día</span><b id="dia">–</b><span id="de">de tu ciclo</span></div>
+    </div>
+    <div class="info">
+      <span class="phase" id="fase">Sin datos</span>
+      <h2 id="titulo">Registra tu periodo</h2>
+      <p id="detalle">Toca «Me llegó hoy» o marca los días en el calendario.</p>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="btn main" id="btnLlego">Me llegó hoy</button>
+    <button class="btn alt" id="btnTermino">Terminó hoy</button>
+  </div>
+
+  <section class="card">
+    <div class="cal-head">
+      <button class="nav" id="prev">‹</button>
+      <h3 id="mes"></h3>
+      <button class="nav" id="next">›</button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="legend">
+      <span><i style="background:var(--period)"></i>Periodo</span>
+      <span><i style="border:2px dashed var(--pred);width:10px;height:10px"></i>Próximo periodo</span>
+      <span><i style="background:var(--fertile)"></i>Días fértiles</span>
+      <span><i style="background:var(--ovu)"></i>Ovulación</span>
+    </div>
+    <p class="tip">Toca un día para marcarlo o desmarcarlo como periodo.</p>
+  </section>
+
+  <p class="note">Tus datos se guardan solo en este celular. Luna es una herramienta de registro: no es un método anticonceptivo ni reemplaza la consulta médica.</p>
+</div>
+
+<div class="overlay" id="bienvenida">
+  <div class="sheet">
+    <h2>Hola, soy Luna ☾</h2>
+    <p>Para darte predicciones necesito 3 datos. Si no los sabes con exactitud, pon un aproximado; se ajustan solos con cada ciclo que registres.</p>
+    <div class="field"><label>¿Qué día empezó tu último periodo?</label><input type="date" id="inUltimo"></div>
+    <div class="row">
+      <div class="field"><label>Duración del ciclo (días)</label><input type="number" id="inCiclo" value="28" min="20" max="45"></div>
+      <div class="field"><label>Duración del periodo (días)</label><input type="number" id="inPeriodo" value="5" min="2" max="10"></div>
+    </div>
+    <button class="btn full" id="btnEmpezar">Empezar</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'luna_lv_v1';
+const DAY = 86400000;
+let data = cargar();
+let vista = new Date(); vista.setDate(1);
+
+function cargar(){
+  try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch(e){ return null; }
+}
+function guardar(){
+  try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){}
+}
+function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function deIso(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function hoy(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+function sumar(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function difDias(a,b){ return Math.round((b-a)/DAY); }
+function fmt(d){ return d.toLocaleDateString('es-CO',{day:'numeric',month:'short'}); }
+function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1800); }
+
+/* Inicios de periodo: días marcados cuyo día anterior no está marcado */
+function inicios(){
+  const set = new Set(data.dias);
+  return data.dias.filter(s => !set.has(iso(sumar(deIso(s),-1)))).sort();
+}
+/* Promedio de ciclo con los últimos 6 ciclos registrados (si hay al menos 2 inicios) */
+function cicloProm(){
+  const ini = inicios();
+  if (ini.length < 2) return data.ciclo;
+  const difs = [];
+  for (let i=1;i<ini.length;i++){ const d=difDias(deIso(ini[i-1]),deIso(ini[i])); if(d>=18 && d<=50) difs.push(d); }
+  const ult = difs.slice(-6);
+  return ult.length ? Math.round(ult.reduce((a,b)=>a+b,0)/ult.length) : data.ciclo;
+}
+function periodoProm(){
+  const set = new Set(data.dias), ini = inicios().slice(-6);
+  if (!ini.length) return data.periodo;
+  const largos = ini.map(s => { let n=0, d=deIso(s); while(set.has(iso(d))){ n++; d=sumar(d,1);} return n; });
+  return Math.round(largos.reduce((a,b)=>a+b,0)/largos.length) || data.periodo;
+}
+
+function calcular(){
+  const ini = inicios();
+  if (!ini.length) return null;
+  const ciclo = cicloProm(), per = periodoProm();
+  const ultimo = deIso(ini[ini.length-1]);
+  let proximo = sumar(ultimo, ciclo);
+  while (proximo < hoy()) proximo = sumar(proximo, ciclo); // si se pasó la fecha, proyecta al siguiente
+  const diaCiclo = difDias(ultimo, hoy()) + 1;
+  const ovu = sumar(proximo, -14);
+  return { ciclo, per, ultimo, proximo, diaCiclo, ovu, fertilIni: sumar(ovu,-5), fertilFin: sumar(ovu,1) };
+}
+
+function fase(c){
+  const h = hoy(), set = new Set(data.dias);
+  if (set.has(iso(h))) return ['Menstrual','#FCE7F3','#BE185D'];
+  if (h >= c.fertilIni && h <= c.fertilFin) return h.getTime()===c.ovu.getTime() ? ['Ovulación','#EDE9FE','#6D28D9'] : ['Días fértiles','#EDE9FE','#6D28D9'];
+  if (h < c.fertilIni) return ['Folicular','#E0F2FE','#0369A1'];
+  return ['Lútea','#FEF3C7','#B45309'];
+}
+
+function pintarResumen(){
+  const c = calcular();
+  const arc = document.getElementById('arc');
+  if (!c){ arc.style.strokeDashoffset = 352; return; }
+  const [nombre,bg,col] = fase(c);
+  const faltan = difDias(hoy(), c.proximo);
+  document.getElementById('dia').textContent = c.diaCiclo;
+  document.getElementById('de').textContent = 'de ' + c.ciclo;
+  const f = document.getElementById('fase'); f.textContent = nombre; f.style.background = bg; f.style.color = col;
+  document.getElementById('titulo').textContent = faltan === 0 ? 'Tu periodo podría llegar hoy' : (faltan === 1 ? 'Tu periodo llegaría mañana' : 'Tu periodo llegaría en ' + faltan + ' días');
+  document.getElementById('detalle').innerHTML = 'Próximo periodo: <b>' + fmt(c.proximo) + '</b><br>Días fértiles: <b>' + fmt(c.fertilIni) + ' – ' + fmt(c.fertilFin) + '</b>';
+  const prog = Math.min(c.diaCiclo / c.ciclo, 1);
+  arc.style.strokeDashoffset = 352 - 352 * prog;
+}
+
+function pintarCalendario(){
+  const grid = document.getElementById('grid'); grid.innerHTML = '';
+  const m = vista.toLocaleDateString('es-CO',{month:'long',year:'numeric'});
+  document.getElementById('mes').textContent = m.charAt(0).toUpperCase() + m.slice(1);
+  ['L','M','M','J','V','S','D'].forEach(d => grid.insertAdjacentHTML('beforeend','<div class="dow">'+d+'</div>'));
+  const offset = (vista.getDay() + 6) % 7;
+  for (let i=0;i<offset;i++) grid.insertAdjacentHTML('beforeend','<div class="day out"></div>');
+  const set = new Set(data ? data.dias : []);
+  const c = data ? calcular() : null;
+  const prevSet = new Set(), fertSet = new Set(); let ovuIso = null;
+  if (c){
+    for (let k=0;k<3;k++){ // predice 3 ciclos hacia adelante
+      const p = sumar(c.proximo, k*c.ciclo);
+      for (let i=0;i<c.per;i++) prevSet.add(iso(sumar(p,i)));
+      const o = sumar(p,-14);
+      for (let i=-5;i<=1;i++) fertSet.add(iso(sumar(o,i)));
+      if (k===0) ovuIso = iso(o);
+      fertSet.add(iso(o));
+      if (k>0) fertSet.add('ovu:'+iso(o));
+    }
+  }
+  const dias = new Date(vista.getFullYear(), vista.getMonth()+1, 0).getDate();
+  const hoyIso = iso(hoy());
+  for (let d=1; d<=dias; d++){
+    const f = new Date(vista.getFullYear(), vista.getMonth(), d), s = iso(f);
+    let cls = 'day';
+    if (set.has(s)) cls += ' period';
+    else if (prevSet.has(s)) cls += ' pred';
+    else if (s === ovuIso || fertSet.has('ovu:'+s)) cls += ' ovu';
+    else if (fertSet.has(s)) cls += ' fertile';
+    if (s === hoyIso) cls += ' today';
+    const el = document.createElement('div'); el.className = cls; el.textContent = d;
+    el.onclick = () => alternar(s);
+    grid.appendChild(el);
+  }
+}
+
+function alternar(s){
+  if (!data) return;
+  if (deIso(s) > hoy()){ toast('Solo puedes marcar días que ya pasaron'); return; }
+  const i = data.dias.indexOf(s);
+  if (i >= 0) data.dias.splice(i,1); else data.dias.push(s);
+  data.dias.sort(); guardar(); pintar();
+}
+
+function marcarLlego(){
+  const h = hoy(), per = periodoProm();
+  for (let i=0;i<per;i++){ const s = iso(sumar(h,i)); if (sumar(h,i) <= h && !data.dias.includes(s)) data.dias.push(s); }
+  data.dias.sort(); data.enCurso = iso(h); guardar(); pintar(); toast('Registrado: tu periodo empezó hoy');
+}
+function marcarTermino(){
+  const ini = inicios(); if (!ini.length){ toast('Primero registra el inicio'); return; }
+  const h = hoy(); let d = deIso(ini[ini.length-1]);
+  if (difDias(d, h) > 10){ toast('Primero toca «Me llegó hoy» o marca el inicio en el calendario'); return; }
+  while (d <= h){ const s = iso(d); if (!data.dias.includes(s)) data.dias.push(s); d = sumar(d,1); }
+  data.dias = data.dias.filter(s => deIso(s) <= h || deIso(s) < deIso(ini[ini.length-1]));
+  data.dias.sort(); guardar(); pintar(); toast('Listo: registré el final de tu periodo');
+}
+
+function pintar(){
+  document.getElementById('hoy').textContent = hoy().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'short'});
+  pintarResumen(); pintarCalendario();
+}
+
+document.getElementById('prev').onclick = () => { vista.setMonth(vista.getMonth()-1); pintarCalendario(); };
+document.getElementById('next').onclick = () => { vista.setMonth(vista.getMonth()+1); pintarCalendario(); };
+document.getElementById('btnLlego').onclick = () => data && marcarLlego();
+document.getElementById('btnTermino').onclick = () => data && marcarTermino();
+document.getElementById('btnEmpezar').onclick = () => {
+  const u = document.getElementById('inUltimo').value;
+  const ciclo = Math.min(45, Math.max(20, parseInt(document.getElementById('inCiclo').value) || 28));
+  const per = Math.min(10, Math.max(2, parseInt(document.getElementById('inPeriodo').value) || 5));
+  if (!u){ toast('Elige la fecha de tu último periodo'); return; }
+  if (deIso(u) > hoy()){ toast('La fecha no puede ser futura'); return; }
+  data = { ciclo, periodo: per, dias: [] };
+  for (let i=0;i<per;i++){ const d = sumar(deIso(u),i); if (d <= hoy()) data.dias.push(iso(d)); }
+  guardar();
+  document.getElementById('bienvenida').classList.remove('show');
+  pintar();
+};
+
+document.getElementById('inUltimo').max = iso(hoy());
+if (!data){ data = null; document.getElementById('bienvenida').classList.add('show'); }
+if (!data){ pintarCalendario(); document.getElementById('hoy').textContent = hoy().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'short'}); }
+else pintar();
+</script>
+</body>
+</html>
