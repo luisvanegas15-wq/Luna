@@ -889,4 +889,154 @@ function descargarIcs(){
   const m = data.metodo, acc = ACC[m.tipo][0];
   const s = proximaFecha(m) || hoy(), [hh,mi] = (m.hora || '20:00').split(':');
   const f = d => d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
-  const rr = {diaria:'FREQ=DAILY', semanal:'FREQ
+  const rr = {diaria:'FREQ=DAILY', semanal:'FREQ=WEEKLY', mensual:'FREQ=MONTHLY', trimestral:'FREQ=MONTHLY;INTERVAL=3', semestral:'FREQ=MONTHLY;INTERVAL=6', anual:'FREQ=YEARLY', dias:'FREQ=DAILY;INTERVAL=' + (m.dias||30)}[m.frec];
+  const desc = 'Recuerda ' + acc + '.' + (m.descanso ? ' En tu semana de descanso puedes ignorar este aviso.' : '') + ' Si cambias de fecha, vuelve a agregar el recordatorio desde Luna.';
+  const L = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//LV Studio//Luna//ES','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+    'UID:luna-' + Date.now() + '@lvstudio', 'DTSTAMP:' + f(new Date()) + 'T000000',
+    'DTSTART:' + f(s) + 'T' + hh + mi + '00', 'DURATION:PT15M',
+    'SUMMARY:☾ Recordatorio Luna', 'DESCRIPTION:' + desc];
+  if (rr) L.push('RRULE:' + rr);
+  L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:☾ Recordatorio Luna','TRIGGER:PT0M','END:VALARM');
+  if (m.frec !== 'diaria') L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:☾ Mañana tienes recordatorio de Luna','TRIGGER:-P1D','END:VALARM');
+  L.push('END:VEVENT','END:VCALENDAR');
+  const blob = new Blob([L.join('\r\n')], {type:'text/calendar'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'luna-recordatorio.ics';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  toast('Abre el archivo y toca «Agregar» en tu calendario');
+}
+function textoMetodo(){
+  const m = data.metodo; if (!m) return 'No registrado';
+  let t = METODOS[m.tipo][1] + (m.nombre ? ' (' + esc(m.nombre) + ')' : '') + ' · ' + frecTxt(m);
+  const p = proximaFecha(m); if (p && m.frec !== 'diaria') t += ' · Próxima: ' + fmtL(p);
+  if (m.frec === 'diaria') t += ' · ' + adherencia(m).txt;
+  else if ((m.aplic||[]).length) t += ' · Últimas aplicaciones: ' + m.aplic.slice(-4).reverse().map(x=>fmtL(deIso(x))).join(', ');
+  return t;
+}
+function adherencia(m){
+  const set = new Set(m.tomas||[]); let toca = 0, tomo = 0;
+  for (let i=1;i<=30;i++){ const d = sumar(hoy(), -i); if (d < deIso(m.fecha)) break; if (enDescanso(m,d)) continue; toca++; if (set.has(iso(d))) tomo++; }
+  return { toca, tomo, txt: toca ? 'Registró ' + tomo + ' de ' + toca + ' tomas en los últimos 30 días' : 'Sin tomas anteriores registradas' };
+}
+function pintarHistMetodo(){
+  const m = data.metodo, el = $('hMetodo');
+  if (!m){ el.innerHTML = '<p class="empty">No has registrado un método. Puedes agregarlo desde Inicio o Ajustes.</p>'; return; }
+  let html = '<div class="it"><span>' + METODOS[m.tipo][0] + ' ' + METODOS[m.tipo][1] + (m.nombre ? ' · ' + esc(m.nombre) : '') + '</span><small>' + frecTxt(m) + '</small></div>';
+  if (m.frec === 'diaria'){
+    const a = adherencia(m);
+    html += '<div class="it" style="display:block"><div style="display:flex;justify-content:space-between"><span>Tomas registradas (30 días)</span><small>' + a.tomo + ' de ' + a.toca + '</small></div><div class="bar"><i style="width:' + (a.toca ? Math.round(a.tomo/a.toca*100) : 0) + '%"></i></div></div>';
+    html += '<div class="it"><span>Racha actual</span><small>' + racha(m) + ' días</small></div>';
+  } else if (m.frec !== 'ninguna'){
+    html += '<div class="it"><span>Próxima vez</span><small>' + fmtL(proximaFecha(m)) + '</small></div>';
+    (m.aplic||[]).slice(-6).reverse().forEach(x => html += '<div class="it"><span>Registrado</span><small>' + fmtL(deIso(x)) + '</small></div>');
+  }
+  el.innerHTML = html;
+}
+
+function abrirMetodo(){
+  const m = data.metodo || {tipo:'pastilla', nombre:'', frec:'diaria', anios:3, dias:30, descanso:false, fecha:iso(hoy()), hora:'20:00'};
+  $('mTipo').value = m.tipo; $('mNombre').value = m.nombre || ''; $('mFrec').value = m.frec;
+  $('mAnios').value = m.anios || 3; $('mDias').value = m.dias || 30; $('mDesc').checked = !!m.descanso;
+  $('mFecha').value = m.fecha || iso(hoy()); $('mHora').value = m.hora || '20:00';
+  formMetodo(); $('metodoSheet').classList.add('show');
+}
+function formMetodo(){
+  const f = $('mFrec').value;
+  $('mAniosF').style.display = f === 'anios' ? 'block' : 'none';
+  $('mDiasF').style.display = f === 'dias' ? 'block' : 'none';
+  $('mDescF').style.display = (f === 'diaria' || f === 'semanal') ? 'flex' : 'none';
+  $('mFechaF').parentElement.style.display = f === 'ninguna' ? 'none' : 'grid';
+  $('mFechaL').textContent = (f === 'diaria' || f === 'semanal') ? 'Fecha de inicio' : 'Última aplicación';
+}
+$('mTipo').onchange = () => {
+  const d = METODOS[$('mTipo').value]; $('mFrec').value = d[2]; if (d[3]) $('mAnios').value = d[3];
+  $('mDesc').checked = false; formMetodo();
+};
+$('mFrec').onchange = formMetodo;
+$('mCancelar').onclick = () => $('metodoSheet').classList.remove('show');
+$('mGuardar').onclick = () => {
+  const frec = $('mFrec').value, fecha = $('mFecha').value;
+  if (frec !== 'ninguna' && !fecha){ toast('Elige la fecha'); return; }
+  if (frec !== 'ninguna' && frec !== 'diaria' && frec !== 'semanal' && deIso(fecha) > hoy()){ toast('La última aplicación no puede ser una fecha futura'); return; }
+  const prev = data.metodo || {}, tipo = $('mTipo').value, mismo = prev.tipo === tipo;
+  data.metodo = {
+    tipo, nombre: $('mNombre').value.trim(), frec,
+    anios: Math.min(12, Math.max(1, parseInt($('mAnios').value) || 1)),
+    dias: Math.min(365, Math.max(1, parseInt($('mDias').value) || 30)),
+    descanso: $('mDesc').checked && (frec === 'diaria' || frec === 'semanal'),
+    fecha: fecha || iso(hoy()), hora: $('mHora').value || '20:00',
+    tomas: mismo ? (prev.tomas || []) : [], aplic: mismo ? (prev.aplic || []) : []
+  };
+  if (frec !== 'diaria' && frec !== 'semanal' && frec !== 'ninguna' && !data.metodo.aplic.includes(fecha)) data.metodo.aplic.push(fecha);
+  guardar(); $('metodoSheet').classList.remove('show'); pintarTodo(); pintarAjustes(); toast('Método guardado');
+};
+
+/* ---------- navegación ---------- */
+function irA(v){
+  document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === 'v-' + v));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.v === v));
+  window.scrollTo(0,0);
+  if (!data) return;
+  if (v === 'inicio') pintarInicio();
+  if (v === 'registro') cargarRegistro();
+  if (v === 'historial') pintarHistorial();
+  if (v === 'ajustes') pintarAjustes();
+}
+function pintarTodo(){ pintarInicio(); }
+
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  if (!data){ $('bienvenida').classList.add('show'); return; }
+  if (t.dataset.v === 'registro') diaSel = iso(hoy());
+  irA(t.dataset.v);
+});
+$('prev').onclick = () => { vista.setMonth(vista.getMonth()-1); pintarCalendario(); };
+$('next').onclick = () => { vista.setMonth(vista.getMonth()+1); pintarCalendario(); };
+$('btnLlego').onclick = () => data && marcarLlego();
+$('btnTermino').onclick = () => data && marcarTermino();
+$('dPrev').onclick = () => cambiarDia(-1);
+$('dNext').onclick = () => cambiarDia(1);
+$('dFecha').onchange = e => { const v = e.target.value; if (!v) return; if (deIso(v) > hoy()){ toast('Elige un día que ya pasó'); e.target.value = diaSel; return; } diaSel = v; cargarRegistro(); };
+$('rGuardar').onclick = guardarRegistro;
+$('rBorrar').onclick = () => {
+  if (!data.registros[diaSel]){ toast('Este día no tiene registro'); return; }
+  confirmar('¿Borrar el registro?', 'Se borrarán los síntomas, el ánimo y las notas del ' + fmtL(deIso(diaSel)) + '.', () => { delete data.registros[diaSel]; guardar(); cargarRegistro(); pintarInicio(); toast('Registro borrado'); });
+};
+$('btnInforme').onclick = informe;
+$('aGuardar').onclick = () => {
+  data.nombre = $('aNombre').value.trim();
+  data.ciclo = Math.min(45, Math.max(20, parseInt($('aCiclo').value) || 28));
+  data.periodo = Math.min(10, Math.max(2, parseInt($('aPer').value) || 5));
+  guardar(); pintarAjustes(); pintarInicio(); toast('Cambios guardados');
+};
+$('aPin').onclick = () => {
+  if (data.pin) confirmar('¿Quitar el PIN?', 'Luna se abrirá sin pedir PIN.', () => { delete data.pin; guardar(); pintarAjustes(); toast('PIN desactivado'); });
+  else mostrarLock('crear');
+};
+$('aMetodo').onclick = () => abrirMetodo();
+$('aMetodoQuitar').onclick = () => confirmar('¿Quitar tu método?', 'Se borrará el método y su historial de tomas o aplicaciones. Tus registros del ciclo se conservan.', () => { delete data.metodo; guardar(); pintarAjustes(); pintarInicio(); toast('Método quitado'); });
+$('lCancel').onclick = () => $('lock').classList.remove('show');
+$('aExportar').onclick = exportar;
+$('aImportar').onclick = () => $('aArchivo').click();
+$('aArchivo').onchange = e => { if (e.target.files[0]) importar(e.target.files[0]); e.target.value = ''; };
+$('aBorrarTodo').onclick = () => confirmar('¿Borrar todos tus datos?', 'Se eliminarán tu periodo, tus registros y tu PIN de este celular. Te recomendamos descargar una copia antes.', () => {
+  try { localStorage.removeItem(KEY); } catch(e){}
+  data = null; irA('inicio'); pintarInicio(); $('bienvenida').classList.add('show'); toast('Datos borrados');
+});
+$('btnEmpezar').onclick = () => {
+  const u = $('inUltimo').value;
+  const ciclo = Math.min(45, Math.max(20, parseInt($('inCiclo').value) || 28));
+  const per = Math.min(10, Math.max(2, parseInt($('inPeriodo').value) || 5));
+  if (!u){ toast('Elige la fecha de tu último periodo'); return; }
+  if (deIso(u) > hoy()){ toast('La fecha no puede ser futura'); return; }
+  data = { nombre: $('inNombre').value.trim(), ciclo, periodo: per, dias: [], registros: {} };
+  for (let i=0;i<per;i++){ const d = sumar(deIso(u),i); if (d <= hoy()) data.dias.push(iso(d)); }
+  guardar(); $('bienvenida').classList.remove('show'); pintarTodo();
+};
+
+/* ---------- arranque ---------- */
+armarTeclado();
+$('inUltimo').max = iso(hoy());
+if (data){ normalizar(); pintarTodo(); if (data.pin) mostrarLock('abrir'); }
+else { pintarInicio(); $('bienvenida').classList.add('show'); }
+</script>
+</body>
+</html>
