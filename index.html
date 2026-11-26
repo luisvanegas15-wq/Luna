@@ -5,44 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Luna · LV Studio</title>
 <meta name="theme-color" content="#7C3AED">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%237C3AED'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white'%3E%E2%98%BE%3C/text%3E%3Ccircle cx='82' cy='18' r='7' fill='%23FACC15'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#FBF7FF; --card:#FFFFFF; --ink:#2E1065; --muted:#7A6E93; --line:#EDE7F6;
-    --period:#E11D74; --period-soft:#FCE7F3; --pred:#F472B6; --fertile:#DDD6FE; --ovu:#7C3AED;
-    --accent:#7C3AED;
+    --period:#E11D74; --soft:#FCE7F3; --pred:#F472B6; --fertile:#DDD6FE; --ovu:#7C3AED; --accent:#7C3AED;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding-bottom:40px}
-  .wrap{max-width:480px;margin:0 auto;padding:18px 16px}
+  body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  .wrap{max-width:480px;margin:0 auto;padding:18px 16px 110px}
   header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
   .brand{display:flex;align-items:center;gap:10px}
   .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#C084FC,#7C3AED);display:grid;place-items:center;color:#fff;font-size:20px;position:relative}
   .logo::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#FACC15}
   .brand h1{font-size:20px;font-weight:700;line-height:1}
   .brand small{font-size:11px;color:var(--muted)}
-  .hello{font-size:13px;color:var(--muted)}
+  .hello{font-size:13px;color:var(--muted);text-align:right}
+  h2.sec{font-size:20px;margin:4px 0 14px}
 
   .card{background:var(--card);border-radius:22px;padding:18px;box-shadow:0 6px 24px rgba(124,58,237,.08);margin-bottom:14px}
+  .card h3{font-size:15px;margin-bottom:10px}
   .hero{display:flex;gap:16px;align-items:center}
-  .ring{position:relative;width:132px;height:132px;flex:none}
+  .ring{position:relative;width:128px;height:128px;flex:none}
   .ring svg{transform:rotate(-90deg)}
   .ring .in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
   .ring .in b{font-size:30px;line-height:1}
   .ring .in span{font-size:11px;color:var(--muted)}
-  .hero .info h2{font-size:16px;margin-bottom:4px}
-  .phase{display:inline-block;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin-bottom:8px}
+  .hero .info h2{font-size:16px;margin-bottom:4px;line-height:1.3}
+  .phase{display:inline-block;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin-bottom:8px;background:var(--line);color:var(--muted)}
   .hero .info p{font-size:13px;color:var(--muted);line-height:1.45}
   .hero .info p b{color:var(--ink)}
+  .tipcard{display:flex;gap:12px;align-items:flex-start}
+  .tipcard .ico{font-size:24px;line-height:1}
+  .tipcard p{font-size:13px;color:var(--muted);line-height:1.5}
+  .tipcard b{display:block;color:var(--ink);font-size:14px;margin-bottom:2px}
 
   .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
   .btn{border:none;border-radius:16px;padding:14px 10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
   .btn.main{background:var(--period);color:#fff}
   .btn.alt{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
   .btn.full{width:100%;background:var(--accent);color:#fff}
+  .btn.ghost{width:100%;background:#fff;color:var(--accent);border:1.5px solid var(--line)}
+  .btn.danger{width:100%;background:#FEE2E2;color:#B91C1C}
+  .btn+.btn{margin-top:8px}
 
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-  .cal-head h3{font-size:16px}
+  .cal-head h3{font-size:16px;margin:0}
   .nav{border:none;background:var(--bg);width:36px;height:36px;border-radius:12px;font-size:18px;color:var(--ink);cursor:pointer}
   .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
   .dow{font-size:11px;color:var(--muted);font-weight:600;padding-bottom:4px}
@@ -53,24 +62,103 @@
   .day.fertile{background:var(--fertile)}
   .day.ovu{background:var(--ovu);color:#fff;font-weight:600}
   .day.today{outline:2px solid var(--ink);outline-offset:1px}
-  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:11px;color:var(--muted)}
+  .day.log::after{content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:#F59E0B}
+  .day.dose::before{content:"";position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:#0EA5E9;border:1.5px solid #fff}
+  .metodo .top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .metodo .mi{width:44px;height:44px;border-radius:14px;background:#E0F2FE;display:grid;place-items:center;font-size:22px;flex:none}
+  .metodo .top b{display:block;font-size:15px}
+  .metodo .top small{font-size:12px;color:var(--muted)}
+  .metodo .estado{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px}
+  .metodo .estado b{color:var(--ink)}
+  .metodo .estado.mal{background:#FFE4E6;color:#9F1239;border-radius:14px;padding:10px 12px}
+  .metodo .links{display:flex;justify-content:space-between;margin-top:10px}
+  .lnk{border:none;background:none;font-family:inherit;font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;padding:4px 0}
+  select{width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:15px;color:var(--ink);background:#fff;-webkit-appearance:none;appearance:none}
+  .chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;margin-bottom:14px;line-height:1.4}
+  .chk input{width:20px;height:20px;accent-color:var(--accent);flex:none;margin-top:1px}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 12px;margin-top:14px;font-size:11px;color:var(--muted)}
   .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-2px}
   .tip{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
-
   .note{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;padding:6px 10px}
 
-  /* Bienvenida */
-  .overlay{position:fixed;inset:0;background:rgba(46,16,101,.45);display:none;align-items:flex-end;justify-content:center;z-index:10}
-  .overlay.show{display:flex}
-  .sheet{background:#fff;width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:24px 20px 30px}
-  .sheet h2{font-size:20px;margin-bottom:6px}
-  .sheet p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+  /* Registro */
+  .daynav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+  .daynav input{flex:1;padding:11px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:15px;color:var(--ink);text-align:center;background:#fff}
+  .switch{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600}
+  .switch input{display:none}
+  .switch .sl{width:50px;height:30px;border-radius:30px;background:var(--line);position:relative;transition:.2s;flex:none}
+  .switch .sl::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s}
+  .switch input:checked+.sl{background:var(--period)}
+  .switch input:checked+.sl::after{left:23px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:8px 12px;font-family:inherit;font-size:13px;color:var(--ink);cursor:pointer}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip.flujo.on{background:var(--period);border-color:var(--period)}
+  textarea{width:100%;min-height:90px;padding:12px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:14px;color:var(--ink);resize:vertical}
+
+  /* Historial */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .stat{background:#fff;border-radius:18px;padding:14px;box-shadow:0 6px 24px rgba(124,58,237,.06)}
+  .stat b{display:block;font-size:24px;line-height:1.1}
+  .stat span{font-size:12px;color:var(--muted)}
+  .list .it{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .list .it:last-child{border-bottom:none}
+  .list .it small{color:var(--muted)}
+  .bar{height:8px;border-radius:8px;background:var(--line);margin-top:4px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:8px}
+  .warn{background:#FEF3C7;color:#92400E;border-radius:16px;padding:12px 14px;font-size:13px;line-height:1.5;margin-bottom:14px}
+  .empty{font-size:13px;color:var(--muted);text-align:center;padding:10px}
+
+  /* Ajustes */
   .field{margin-bottom:14px}
   .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
-  .field input{width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:15px;color:var(--ink)}
+  .field input{width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:15px;color:var(--ink);background:#fff}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;font-size:13px;opacity:0;transition:.3s;pointer-events:none}
+  .small{font-size:12px;color:var(--muted);line-height:1.5}
+  .small a{color:var(--accent)}
+
+  /* Barra inferior */
+  .tabbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+  .tabbar .in{display:grid;grid-template-columns:repeat(4,1fr);width:100%;max-width:480px}
+  .tab{border:none;background:none;font-family:inherit;font-size:11px;color:var(--muted);padding:10px 0 12px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+  .tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .tab.on{color:var(--accent);font-weight:600}
+  .view{display:none}
+  .view.on{display:block}
+
+  /* Capas */
+  .overlay{position:fixed;inset:0;background:rgba(46,16,101,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
+  .overlay.show{display:flex}
+  .sheet{background:#fff;width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:24px 20px 30px;max-height:92vh;overflow:auto}
+  .sheet h2{font-size:20px;margin-bottom:6px}
+  .sheet p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+  .lock{position:fixed;inset:0;background:linear-gradient(160deg,#C084FC,#7C3AED);z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:20px}
+  .lock.show{display:flex}
+  .lock h2{font-size:22px;margin:10px 0 4px}
+  .lock p{font-size:13px;opacity:.85;margin-bottom:20px}
+  .dots{display:flex;gap:14px;margin-bottom:26px}
+  .dots i{width:14px;height:14px;border-radius:50%;border:2px solid #fff}
+  .dots i.f{background:#fff}
+  .keys{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
+  .keys button{height:72px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-family:inherit;font-size:26px;cursor:pointer}
+  .keys button.blank{visibility:hidden}
+  .shake{animation:sh .35s}
+  @keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+  .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:40;width:max-content;max-width:90vw;text-align:center}
   .toast.show{opacity:1}
+
+  /* Informe para imprimir */
+  #informe{display:none}
+  @media print{
+    body{background:#fff}
+    .wrap,.tabbar,.overlay,.lock,.toast{display:none !important}
+    #informe{display:block;padding:20px;font-size:12px;color:#111}
+    #informe h1{font-size:20px;margin-bottom:4px}
+    #informe h2{font-size:14px;margin:16px 0 6px}
+    #informe table{width:100%;border-collapse:collapse}
+    #informe td,#informe th{border:1px solid #ccc;padding:5px 7px;text-align:left}
+    #informe .pie{margin-top:18px;font-size:10px;color:#555}
+  }
 </style>
 </head>
 <body>
@@ -80,223 +168,725 @@
       <div class="logo">☾</div>
       <div><h1>Luna</h1><small>LV Studio Apps</small></div>
     </div>
-    <div class="hello" id="hoy"></div>
+    <div class="hello" id="hola"></div>
   </header>
 
-  <section class="card hero">
-    <div class="ring">
-      <svg width="132" height="132" viewBox="0 0 132 132">
-        <circle cx="66" cy="66" r="56" fill="none" stroke="#F3E8FF" stroke-width="12"/>
-        <circle id="arc" cx="66" cy="66" r="56" fill="none" stroke="#E11D74" stroke-width="12" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352"/>
-      </svg>
-      <div class="in"><span>Día</span><b id="dia">–</b><span id="de">de tu ciclo</span></div>
+  <!-- INICIO -->
+  <section class="view on" id="v-inicio">
+    <div class="card hero">
+      <div class="ring">
+        <svg width="128" height="128" viewBox="0 0 132 132">
+          <circle cx="66" cy="66" r="56" fill="none" stroke="#F3E8FF" stroke-width="12"/>
+          <circle id="arc" cx="66" cy="66" r="56" fill="none" stroke="#E11D74" stroke-width="12" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352"/>
+        </svg>
+        <div class="in"><span>Día</span><b id="dia">–</b><span id="de">de tu ciclo</span></div>
+      </div>
+      <div class="info">
+        <span class="phase" id="fase">Sin datos</span>
+        <h2 id="titulo">Registra tu periodo</h2>
+        <p id="detalle">Toca «Me llegó hoy» o marca los días en el calendario.</p>
+      </div>
     </div>
-    <div class="info">
-      <span class="phase" id="fase">Sin datos</span>
-      <h2 id="titulo">Registra tu periodo</h2>
-      <p id="detalle">Toca «Me llegó hoy» o marca los días en el calendario.</p>
+
+    <div class="actions">
+      <button class="btn main" id="btnLlego">Me llegó hoy</button>
+      <button class="btn alt" id="btnTermino">Terminó hoy</button>
     </div>
+
+    <div class="card metodo" id="metodoCard"></div>
+
+    <div class="card tipcard" id="faseTip">
+      <div class="ico" id="tipIco">🌙</div>
+      <p><b id="tipTit">Tu fase de hoy</b><span id="tipTxt">Cuando registres tu periodo, aquí verás qué pasa en tu cuerpo y un consejo para hoy.</span></p>
+    </div>
+
+    <div class="card">
+      <div class="cal-head">
+        <button class="nav" id="prev" aria-label="Mes anterior">‹</button>
+        <h3 id="mes"></h3>
+        <button class="nav" id="next" aria-label="Mes siguiente">›</button>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="legend">
+        <span><i style="background:var(--period)"></i>Periodo</span>
+        <span><i style="border:2px dashed var(--pred);width:10px;height:10px"></i>Próximo periodo</span>
+        <span><i style="background:var(--fertile)"></i>Días fértiles</span>
+        <span><i style="background:var(--ovu)"></i>Ovulación</span>
+        <span><i style="background:#F59E0B;width:7px;height:7px"></i>Con registro</span>
+        <span><i style="background:#0EA5E9;width:8px;height:8px"></i>Toca anticonceptivo</span>
+      </div>
+      <p class="tip">Toca un día para registrar cómo te sentiste o marcarlo como periodo.</p>
+    </div>
+    <p class="note">Tus datos se guardan solo en este celular. Luna es una herramienta de registro: no es un método anticonceptivo ni reemplaza la consulta médica.</p>
   </section>
 
-  <div class="actions">
-    <button class="btn main" id="btnLlego">Me llegó hoy</button>
-    <button class="btn alt" id="btnTermino">Terminó hoy</button>
-  </div>
-
-  <section class="card">
-    <div class="cal-head">
-      <button class="nav" id="prev">‹</button>
-      <h3 id="mes"></h3>
-      <button class="nav" id="next">›</button>
+  <!-- REGISTRO -->
+  <section class="view" id="v-registro">
+    <h2 class="sec">Registro diario</h2>
+    <div class="daynav">
+      <button class="nav" id="dPrev" aria-label="Día anterior">‹</button>
+      <input type="date" id="dFecha">
+      <button class="nav" id="dNext" aria-label="Día siguiente">›</button>
     </div>
-    <div class="grid" id="grid"></div>
-    <div class="legend">
-      <span><i style="background:var(--period)"></i>Periodo</span>
-      <span><i style="border:2px dashed var(--pred);width:10px;height:10px"></i>Próximo periodo</span>
-      <span><i style="background:var(--fertile)"></i>Días fértiles</span>
-      <span><i style="background:var(--ovu)"></i>Ovulación</span>
+    <div class="card">
+      <label class="switch">¿Tuviste periodo este día?<input type="checkbox" id="rPeriodo"><span class="sl"></span></label>
     </div>
-    <p class="tip">Toca un día para marcarlo o desmarcarlo como periodo.</p>
+    <div class="card">
+      <h3>Flujo</h3>
+      <div class="chips" id="rFlujo"></div>
+    </div>
+    <div class="card">
+      <h3>Síntomas</h3>
+      <div class="chips" id="rSint"></div>
+    </div>
+    <div class="card">
+      <h3>¿Cómo te sentiste?</h3>
+      <div class="chips" id="rAnimo"></div>
+    </div>
+    <div class="card">
+      <h3>Notas</h3>
+      <textarea id="rNotas" placeholder="Ej.: dormí poco, tomé un analgésico, tuve una semana estresante…"></textarea>
+    </div>
+    <button class="btn full" id="rGuardar">Guardar registro</button>
+    <button class="btn ghost" id="rBorrar">Borrar el registro de este día</button>
   </section>
 
-  <p class="note">Tus datos se guardan solo en este celular. Luna es una herramienta de registro: no es un método anticonceptivo ni reemplaza la consulta médica.</p>
+  <!-- HISTORIAL -->
+  <section class="view" id="v-historial">
+    <h2 class="sec">Tu historial</h2>
+    <div id="hAviso"></div>
+    <div class="stats">
+      <div class="stat"><b id="sCiclo">–</b><span>Ciclo promedio (días)</span></div>
+      <div class="stat"><b id="sPer">–</b><span>Periodo promedio (días)</span></div>
+      <div class="stat"><b id="sNum">0</b><span>Ciclos registrados</span></div>
+      <div class="stat"><b id="sVar">–</b><span>Variación entre ciclos</span></div>
+    </div>
+    <div class="card">
+      <h3>Tus ciclos</h3>
+      <div class="list" id="hCiclos"></div>
+    </div>
+    <div class="card" id="hMetodoCard">
+      <h3>Tu método anticonceptivo</h3>
+      <div class="list" id="hMetodo"></div>
+    </div>
+    <div class="card">
+      <h3>Síntomas más frecuentes</h3>
+      <div class="list" id="hSint"></div>
+    </div>
+    <div class="card">
+      <h3>Tu ánimo</h3>
+      <div class="list" id="hAnimo"></div>
+    </div>
+    <button class="btn full" id="btnInforme">Informe para tu cita (PDF)</button>
+    <p class="note">Abre el informe y elige «Guardar como PDF» para llevarlo a tu cita o enviarlo a tu médico.</p>
+  </section>
+
+  <!-- AJUSTES -->
+  <section class="view" id="v-ajustes">
+    <h2 class="sec">Ajustes</h2>
+    <div class="card">
+      <h3>Tus datos</h3>
+      <div class="field"><label>¿Cómo te llamo?</label><input type="text" id="aNombre" placeholder="Tu nombre (opcional)" maxlength="30"></div>
+      <div class="row">
+        <div class="field"><label>Ciclo (días)</label><input type="number" id="aCiclo" min="20" max="45"></div>
+        <div class="field"><label>Periodo (días)</label><input type="number" id="aPer" min="2" max="10"></div>
+      </div>
+      <p class="small" style="margin-bottom:12px">Estos valores se usan hasta que registres 2 ciclos. Después Luna calcula el promedio con tus propios datos.</p>
+      <button class="btn full" id="aGuardar">Guardar cambios</button>
+    </div>
+    <div class="card">
+      <h3>Método anticonceptivo</h3>
+      <p class="small" id="aMetodoTxt" style="margin-bottom:12px">No has registrado ningún método.</p>
+      <button class="btn ghost" id="aMetodo">Agregar método</button>
+      <button class="btn ghost" id="aMetodoQuitar" style="display:none">Quitar método</button>
+    </div>
+    <div class="card">
+      <h3>Bloqueo con PIN</h3>
+      <p class="small" id="aPinEstado" style="margin-bottom:12px">Protege Luna con un PIN de 4 números.</p>
+      <button class="btn ghost" id="aPin">Activar PIN</button>
+    </div>
+    <div class="card">
+      <h3>Copia de seguridad</h3>
+      <p class="small" style="margin-bottom:12px">Como tus datos viven solo en este celular, guarda una copia antes de cambiar de teléfono o borrar el navegador.</p>
+      <button class="btn ghost" id="aExportar">Descargar copia</button>
+      <button class="btn ghost" id="aImportar">Restaurar copia</button>
+      <input type="file" id="aArchivo" accept=".json,application/json" style="display:none">
+    </div>
+    <div class="card">
+      <h3>Privacidad</h3>
+      <p class="small">Luna no tiene servidores ni cuentas: tus datos de salud se guardan solo en este dispositivo y LV Studio no los recibe, no los vende ni los comparte. Tú decides si haces una copia y dónde la guardas. Tratamos cualquier dato que nos compartas por WhatsApp según la Ley 1581 de 2012 de protección de datos personales.</p>
+      <p class="small" style="margin-top:10px">Luna es una herramienta de registro y bienestar. No es un método anticonceptivo ni reemplaza la consulta médica. Si tienes dolor intenso, sangrado muy abundante o cambios que te preocupan, consulta a tu médico.</p>
+    </div>
+    <div class="card">
+      <h3>Borrar todo</h3>
+      <p class="small" style="margin-bottom:12px">Elimina todos tus registros de este celular. No se puede deshacer.</p>
+      <button class="btn danger" id="aBorrarTodo">Borrar todos mis datos</button>
+    </div>
+    <p class="note">Luna v1.0 · LV Studio Apps · Soporte por WhatsApp: <a href="https://wa.me/573187179215" style="color:var(--accent)">318 717 9215</a></p>
+  </section>
 </div>
 
+<nav class="tabbar"><div class="in">
+  <button class="tab on" data-v="inicio"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button>
+  <button class="tab" data-v="registro"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Registro</button>
+  <button class="tab" data-v="historial"><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>Historial</button>
+  <button class="tab" data-v="ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
+</div></nav>
+
+<!-- Bienvenida -->
 <div class="overlay" id="bienvenida">
   <div class="sheet">
     <h2>Hola, soy Luna ☾</h2>
-    <p>Para darte predicciones necesito 3 datos. Si no los sabes con exactitud, pon un aproximado; se ajustan solos con cada ciclo que registres.</p>
+    <p>Para darte predicciones necesito unos datos. Si no los sabes con exactitud, pon un aproximado: se ajustan solos con cada ciclo que registres.</p>
+    <div class="field"><label>¿Cómo te llamo? (opcional)</label><input type="text" id="inNombre" maxlength="30" placeholder="Tu nombre"></div>
     <div class="field"><label>¿Qué día empezó tu último periodo?</label><input type="date" id="inUltimo"></div>
     <div class="row">
       <div class="field"><label>Duración del ciclo (días)</label><input type="number" id="inCiclo" value="28" min="20" max="45"></div>
       <div class="field"><label>Duración del periodo (días)</label><input type="number" id="inPeriodo" value="5" min="2" max="10"></div>
     </div>
+    <p class="small" style="margin-bottom:14px">Tus datos se guardan solo en este celular. Luna no es un método anticonceptivo.</p>
     <button class="btn full" id="btnEmpezar">Empezar</button>
   </div>
 </div>
+
+<!-- Método anticonceptivo -->
+<div class="overlay" id="metodoSheet">
+  <div class="sheet">
+    <h2>Tu método anticonceptivo</h2>
+    <p>Luna te muestra cuándo te toca y te ayuda a no olvidarlo. Sigue siempre las indicaciones de tu médico y del empaque.</p>
+    <div class="field"><label>Método</label>
+      <select id="mTipo">
+        <option value="pastilla">💊 Pastilla</option>
+        <option value="inyeccion">💉 Inyección</option>
+        <option value="parche">🩹 Parche</option>
+        <option value="anillo">⭕ Anillo vaginal</option>
+        <option value="implante">📍 Implante subdérmico</option>
+        <option value="diu_cobre">🔩 DIU de cobre (T de cobre)</option>
+        <option value="diu_hormonal">🔹 DIU hormonal</option>
+        <option value="condon">🛡️ Condón</option>
+        <option value="otro">➕ Otro</option>
+      </select>
+    </div>
+    <div class="field"><label>Nombre del medicamento o marca (opcional)</label><input type="text" id="mNombre" maxlength="40" placeholder="Ej.: el nombre que dice la caja"></div>
+    <div class="field"><label>¿Cada cuánto?</label>
+      <select id="mFrec">
+        <option value="diaria">Diaria</option>
+        <option value="semanal">Semanal</option>
+        <option value="mensual">Mensual</option>
+        <option value="trimestral">Trimestral (cada 3 meses)</option>
+        <option value="semestral">Semestral (cada 6 meses)</option>
+        <option value="anual">Anual</option>
+        <option value="anios">Cada varios años</option>
+        <option value="dias">Cada cierto número de días</option>
+        <option value="ninguna">Sin recordatorio</option>
+      </select>
+    </div>
+    <div class="field" id="mAniosF" style="display:none"><label>¿Cada cuántos años?</label><input type="number" id="mAnios" min="1" max="12" value="3"></div>
+    <div class="field" id="mDiasF" style="display:none"><label>¿Cada cuántos días?</label><input type="number" id="mDias" min="1" max="365" value="30"></div>
+    <label class="chk" id="mDescF"><input type="checkbox" id="mDesc"><span>Incluye semana de descanso (3 semanas de uso y 1 de descanso)</span></label>
+    <div class="row">
+      <div class="field" id="mFechaF"><label id="mFechaL">Fecha de inicio</label><input type="date" id="mFecha"></div>
+      <div class="field"><label>Hora del recordatorio</label><input type="time" id="mHora" value="20:00"></div>
+    </div>
+    <button class="btn full" id="mGuardar">Guardar método</button>
+    <button class="btn ghost" id="mCancelar">Cancelar</button>
+  </div>
+</div>
+
+<!-- Confirmación -->
+<div class="overlay" id="confirmar">
+  <div class="sheet">
+    <h2 id="cTit">¿Seguro?</h2>
+    <p id="cTxt"></p>
+    <button class="btn danger" id="cSi">Sí, continuar</button>
+    <button class="btn ghost" id="cNo">Cancelar</button>
+  </div>
+</div>
+
+<!-- Bloqueo -->
+<div class="lock" id="lock">
+  <div class="logo" style="width:56px;height:56px;font-size:28px;background:rgba(255,255,255,.2)">☾</div>
+  <h2 id="lTit">Luna está protegida</h2>
+  <p id="lTxt">Escribe tu PIN</p>
+  <div class="dots" id="lDots"><i></i><i></i><i></i><i></i></div>
+  <div class="keys" id="lKeys"></div>
+  <button class="btn" id="lCancel" style="background:none;color:#fff;margin-top:18px;display:none">Cancelar</button>
+</div>
+
 <div class="toast" id="toast"></div>
+<div id="informe"></div>
 
 <script>
 const KEY = 'luna_lv_v1';
 const DAY = 86400000;
+const FLUJOS = ['Manchado','Leve','Medio','Abundante'];
+const SINTOMAS = ['Cólicos','Dolor de cabeza','Hinchazón','Senos sensibles','Acné','Cansancio','Dolor de espalda','Antojos','Náuseas','Insomnio','Cambios en el flujo vaginal'];
+const ANIMOS = ['Feliz','Tranquila','Con energía','Sensible','Irritable','Ansiosa','Triste'];
+const TIPS = {
+  'Menstrual':['🩸','Fase menstrual','Es normal tener menos energía. Descansa, hidrátate y usa calor en el vientre para los cólicos. Si el dolor no te deja hacer tu vida, consúltalo con tu médico.'],
+  'Folicular':['🌱','Fase folicular','Después del periodo, muchas mujeres sienten más energía y mejor ánimo. Buen momento para empezar proyectos o entrenar con más intensidad.'],
+  'Días fértiles':['🌸','Ventana fértil','Estos días la probabilidad de embarazo es más alta. Recuerda: Luna es un registro, no un método anticonceptivo.'],
+  'Ovulación':['✨','Día probable de ovulación','Es el día con mayor probabilidad de embarazo del ciclo. Algunas mujeres notan un flujo más transparente o una molestia leve a un lado del vientre.'],
+  'Lútea':['🍂','Fase lútea','En los días previos al periodo pueden aparecer irritabilidad, sensibilidad, antojos o hinchazón. Sé amable contigo: dormir bien y mover el cuerpo suele ayudar.'],
+  'Retraso':['⏳','Tu periodo se retrasó','El estrés, los cambios de rutina, una enfermedad o un embarazo pueden retrasarlo. Si pasa de una semana o te preocupa, haz una prueba o consulta a tu médico.']
+};
+
 let data = cargar();
 let vista = new Date(); vista.setDate(1);
+let diaSel = null;
+let reg = null; // registro en edición
 
-function cargar(){
-  try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch(e){ return null; }
-}
-function guardar(){
-  try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){}
-}
+/* ---------- utilidades ---------- */
+function cargar(){ try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch(e){ return null; } }
+function guardar(){ try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){ toast('No se pudo guardar en este navegador'); } }
 function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function deIso(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
 function hoy(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
 function sumar(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
 function difDias(a,b){ return Math.round((b-a)/DAY); }
 function fmt(d){ return d.toLocaleDateString('es-CO',{day:'numeric',month:'short'}); }
-function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1800); }
+function fmtL(d){ return d.toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'}); }
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+let tT; function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>el.classList.remove('show'),2200); }
+function normalizar(){ data.dias = data.dias || []; data.registros = data.registros || {}; data.nombre = data.nombre || ''; }
 
-/* Inicios de periodo: días marcados cuyo día anterior no está marcado */
+function confirmar(tit, txt, si){
+  $('cTit').textContent = tit; $('cTxt').textContent = txt;
+  $('confirmar').classList.add('show');
+  $('cSi').onclick = () => { $('confirmar').classList.remove('show'); si(); };
+  $('cNo').onclick = () => $('confirmar').classList.remove('show');
+}
+
+/* ---------- cálculos del ciclo ---------- */
 function inicios(){
   const set = new Set(data.dias);
   return data.dias.filter(s => !set.has(iso(sumar(deIso(s),-1)))).sort();
 }
-/* Promedio de ciclo con los últimos 6 ciclos registrados (si hay al menos 2 inicios) */
-function cicloProm(){
-  const ini = inicios();
-  if (ini.length < 2) return data.ciclo;
-  const difs = [];
-  for (let i=1;i<ini.length;i++){ const d=difDias(deIso(ini[i-1]),deIso(ini[i])); if(d>=18 && d<=50) difs.push(d); }
-  const ult = difs.slice(-6);
-  return ult.length ? Math.round(ult.reduce((a,b)=>a+b,0)/ult.length) : data.ciclo;
+function largosCiclos(){
+  const ini = inicios(), out = [];
+  for (let i=1;i<ini.length;i++){ const d=difDias(deIso(ini[i-1]),deIso(ini[i])); if(d>=15 && d<=60) out.push(d); }
+  return out;
 }
+function largoPeriodo(s){ const set=new Set(data.dias); let n=0, d=deIso(s); while(set.has(iso(d))){ n++; d=sumar(d,1);} return n; }
+function cicloProm(){ const l = largosCiclos().slice(-6); return l.length ? Math.round(l.reduce((a,b)=>a+b,0)/l.length) : data.ciclo; }
 function periodoProm(){
-  const set = new Set(data.dias), ini = inicios().slice(-6);
-  if (!ini.length) return data.periodo;
-  const largos = ini.map(s => { let n=0, d=deIso(s); while(set.has(iso(d))){ n++; d=sumar(d,1);} return n; });
-  return Math.round(largos.reduce((a,b)=>a+b,0)/largos.length) || data.periodo;
+  const ini = inicios().slice(-6); if (!ini.length) return data.periodo;
+  const l = ini.map(largoPeriodo); return Math.round(l.reduce((a,b)=>a+b,0)/l.length) || data.periodo;
 }
-
 function calcular(){
-  const ini = inicios();
-  if (!ini.length) return null;
+  const ini = inicios(); if (!ini.length) return null;
   const ciclo = cicloProm(), per = periodoProm();
   const ultimo = deIso(ini[ini.length-1]);
-  let proximo = sumar(ultimo, ciclo);
-  while (proximo < hoy()) proximo = sumar(proximo, ciclo); // si se pasó la fecha, proyecta al siguiente
+  const esperado = sumar(ultimo, ciclo);
+  const retraso = Math.max(0, difDias(esperado, hoy()));
+  const proximo = retraso > 0 ? hoy() : esperado;
   const diaCiclo = difDias(ultimo, hoy()) + 1;
-  const ovu = sumar(proximo, -14);
-  return { ciclo, per, ultimo, proximo, diaCiclo, ovu, fertilIni: sumar(ovu,-5), fertilFin: sumar(ovu,1) };
+  const ovu = sumar(esperado, -14);
+  return { ciclo, per, ultimo, esperado, proximo, retraso, diaCiclo, ovu, fertilIni: sumar(ovu,-5), fertilFin: sumar(ovu,1) };
 }
-
 function fase(c){
-  const h = hoy(), set = new Set(data.dias);
-  if (set.has(iso(h))) return ['Menstrual','#FCE7F3','#BE185D'];
-  if (h >= c.fertilIni && h <= c.fertilFin) return h.getTime()===c.ovu.getTime() ? ['Ovulación','#EDE9FE','#6D28D9'] : ['Días fértiles','#EDE9FE','#6D28D9'];
-  if (h < c.fertilIni) return ['Folicular','#E0F2FE','#0369A1'];
-  return ['Lútea','#FEF3C7','#B45309'];
+  const h = hoy();
+  if (data.dias.includes(iso(h))) return 'Menstrual';
+  if (c.retraso > 0) return 'Retraso';
+  if (h.getTime() === c.ovu.getTime()) return 'Ovulación';
+  if (h >= c.fertilIni && h <= c.fertilFin) return 'Días fértiles';
+  if (h < c.fertilIni) return 'Folicular';
+  return 'Lútea';
 }
+const COLFASE = {'Menstrual':['#FCE7F3','#BE185D'],'Folicular':['#E0F2FE','#0369A1'],'Días fértiles':['#EDE9FE','#6D28D9'],'Ovulación':['#EDE9FE','#6D28D9'],'Lútea':['#FEF3C7','#B45309'],'Retraso':['#FFE4E6','#BE123C']};
 
-function pintarResumen(){
-  const c = calcular();
-  const arc = document.getElementById('arc');
-  if (!c){ arc.style.strokeDashoffset = 352; return; }
-  const [nombre,bg,col] = fase(c);
-  const faltan = difDias(hoy(), c.proximo);
-  document.getElementById('dia').textContent = c.diaCiclo;
-  document.getElementById('de').textContent = 'de ' + c.ciclo;
-  const f = document.getElementById('fase'); f.textContent = nombre; f.style.background = bg; f.style.color = col;
-  document.getElementById('titulo').textContent = faltan === 0 ? 'Tu periodo podría llegar hoy' : (faltan === 1 ? 'Tu periodo llegaría mañana' : 'Tu periodo llegaría en ' + faltan + ' días');
-  document.getElementById('detalle').innerHTML = 'Próximo periodo: <b>' + fmt(c.proximo) + '</b><br>Días fértiles: <b>' + fmt(c.fertilIni) + ' – ' + fmt(c.fertilFin) + '</b>';
-  const prog = Math.min(c.diaCiclo / c.ciclo, 1);
-  arc.style.strokeDashoffset = 352 - 352 * prog;
+/* ---------- INICIO ---------- */
+function pintarInicio(){
+  const n = data && data.nombre ? 'Hola, ' + esc(data.nombre) + '<br>' : '';
+  $('hola').innerHTML = n + hoy().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'short'});
+  const c = data ? calcular() : null;
+  const arc = $('arc');
+  if (!c){
+    arc.style.strokeDashoffset = 352; $('dia').textContent = '–'; $('de').textContent = 'de tu ciclo';
+    $('fase').textContent = 'Sin datos'; $('fase').style.background=''; $('fase').style.color='';
+    $('titulo').textContent = 'Registra tu periodo';
+    $('detalle').textContent = 'Toca «Me llegó hoy» o marca los días en el calendario.';
+    $('tipIco').textContent = '🌙'; $('tipTit').textContent = 'Tu fase de hoy';
+    $('tipTxt').textContent = 'Cuando registres tu periodo, aquí verás qué pasa en tu cuerpo y un consejo para hoy.';
+  } else {
+    const f = fase(c), [bg,col] = COLFASE[f];
+    $('dia').textContent = c.diaCiclo; $('de').textContent = 'de ' + c.ciclo;
+    $('fase').textContent = f === 'Retraso' ? 'Retraso' : f; $('fase').style.background = bg; $('fase').style.color = col;
+    if (c.retraso > 0){
+      $('titulo').textContent = c.retraso === 1 ? 'Tu periodo lleva 1 día de retraso' : 'Tu periodo lleva ' + c.retraso + ' días de retraso';
+      $('detalle').innerHTML = 'Lo esperabas el <b>' + fmt(c.esperado) + '</b>.<br>Cuando llegue, toca «Me llegó hoy».';
+    } else {
+      const faltan = difDias(hoy(), c.proximo);
+      $('titulo').textContent = faltan === 0 ? 'Tu periodo podría llegar hoy' : (faltan === 1 ? 'Tu periodo llegaría mañana' : 'Tu periodo llegaría en ' + faltan + ' días');
+      $('detalle').innerHTML = 'Próximo periodo: <b>' + fmt(c.proximo) + '</b><br>Días fértiles: <b>' + fmt(c.fertilIni) + ' – ' + fmt(c.fertilFin) + '</b>';
+    }
+    arc.style.strokeDashoffset = 352 - 352 * Math.min(c.diaCiclo / c.ciclo, 1);
+    const t = TIPS[f]; $('tipIco').textContent = t[0]; $('tipTit').textContent = t[1]; $('tipTxt').textContent = t[2];
+    const hormonal = data.metodo && ['pastilla','inyeccion','parche','anillo','implante','diu_hormonal'].includes(data.metodo.tipo);
+    if (hormonal && (f === 'Días fértiles' || f === 'Ovulación' || f === 'Folicular' || f === 'Lútea'))
+      $('tipTxt').textContent = 'Como usas un método hormonal, las fechas de ovulación y días fértiles del calendario son solo una referencia: tu método cambia la forma en que funciona tu ciclo. Sigue las indicaciones de tu médico.';
+  }
+  if (data) { $('metodoCard').style.display = ''; pintarMetodo(); } else $('metodoCard').style.display = 'none';
+  pintarCalendario();
 }
 
 function pintarCalendario(){
-  const grid = document.getElementById('grid'); grid.innerHTML = '';
+  const grid = $('grid'); grid.innerHTML = '';
   const m = vista.toLocaleDateString('es-CO',{month:'long',year:'numeric'});
-  document.getElementById('mes').textContent = m.charAt(0).toUpperCase() + m.slice(1);
+  $('mes').textContent = m.charAt(0).toUpperCase() + m.slice(1);
   ['L','M','M','J','V','S','D'].forEach(d => grid.insertAdjacentHTML('beforeend','<div class="dow">'+d+'</div>'));
   const offset = (vista.getDay() + 6) % 7;
   for (let i=0;i<offset;i++) grid.insertAdjacentHTML('beforeend','<div class="day out"></div>');
   const set = new Set(data ? data.dias : []);
+  const regs = data ? data.registros : {};
   const c = data ? calcular() : null;
-  const prevSet = new Set(), fertSet = new Set(); let ovuIso = null;
+  const pred = new Set(), fert = new Set(), ovus = new Set();
   if (c){
-    for (let k=0;k<3;k++){ // predice 3 ciclos hacia adelante
+    for (let k=0;k<3;k++){
       const p = sumar(c.proximo, k*c.ciclo);
-      for (let i=0;i<c.per;i++) prevSet.add(iso(sumar(p,i)));
-      const o = sumar(p,-14);
-      for (let i=-5;i<=1;i++) fertSet.add(iso(sumar(o,i)));
-      if (k===0) ovuIso = iso(o);
-      fertSet.add(iso(o));
-      if (k>0) fertSet.add('ovu:'+iso(o));
+      for (let i=0;i<c.per;i++) pred.add(iso(sumar(p,i)));
+      const o = k===0 ? c.ovu : sumar(p,-14);
+      if (k===0 && c.retraso > 0) continue; // si hay retraso no se muestra la ventana fértil pasada
+      ovus.add(iso(o));
+      for (let i=-5;i<=1;i++) fert.add(iso(sumar(o,i)));
     }
   }
-  const dias = new Date(vista.getFullYear(), vista.getMonth()+1, 0).getDate();
+  const total = new Date(vista.getFullYear(), vista.getMonth()+1, 0).getDate();
   const hoyIso = iso(hoy());
-  for (let d=1; d<=dias; d++){
-    const f = new Date(vista.getFullYear(), vista.getMonth(), d), s = iso(f);
+  const dosis = fechasMetodo(vista.getFullYear(), vista.getMonth());
+  for (let d=1; d<=total; d++){
+    const s = iso(new Date(vista.getFullYear(), vista.getMonth(), d));
     let cls = 'day';
     if (set.has(s)) cls += ' period';
-    else if (prevSet.has(s)) cls += ' pred';
-    else if (s === ovuIso || fertSet.has('ovu:'+s)) cls += ' ovu';
-    else if (fertSet.has(s)) cls += ' fertile';
+    else if (pred.has(s) && s >= hoyIso) cls += ' pred';
+    else if (ovus.has(s)) cls += ' ovu';
+    else if (fert.has(s)) cls += ' fertile';
     if (s === hoyIso) cls += ' today';
+    if (regs[s] && tieneDatos(regs[s])) cls += ' log';
+    if (dosis.has(s)) cls += ' dose';
     const el = document.createElement('div'); el.className = cls; el.textContent = d;
-    el.onclick = () => alternar(s);
+    el.onclick = () => abrirRegistro(s);
     grid.appendChild(el);
   }
 }
-
-function alternar(s){
-  if (!data) return;
-  if (deIso(s) > hoy()){ toast('Solo puedes marcar días que ya pasaron'); return; }
-  const i = data.dias.indexOf(s);
-  if (i >= 0) data.dias.splice(i,1); else data.dias.push(s);
-  data.dias.sort(); guardar(); pintar();
-}
+function tieneDatos(r){ return r && (r.flujo || (r.sintomas && r.sintomas.length) || (r.animos && r.animos.length) || (r.notas && r.notas.trim())); }
 
 function marcarLlego(){
-  const h = hoy(), per = periodoProm();
-  for (let i=0;i<per;i++){ const s = iso(sumar(h,i)); if (sumar(h,i) <= h && !data.dias.includes(s)) data.dias.push(s); }
-  data.dias.sort(); data.enCurso = iso(h); guardar(); pintar(); toast('Registrado: tu periodo empezó hoy');
+  const s = iso(hoy());
+  if (data.dias.includes(s)){ toast('Hoy ya está marcado como periodo'); return; }
+  data.dias.push(s); data.dias.sort(); guardar(); pintarTodo(); toast('Registrado: tu periodo empezó hoy');
 }
 function marcarTermino(){
-  const ini = inicios(); if (!ini.length){ toast('Primero registra el inicio'); return; }
-  const h = hoy(); let d = deIso(ini[ini.length-1]);
-  if (difDias(d, h) > 10){ toast('Primero toca «Me llegó hoy» o marca el inicio en el calendario'); return; }
-  while (d <= h){ const s = iso(d); if (!data.dias.includes(s)) data.dias.push(s); d = sumar(d,1); }
-  data.dias = data.dias.filter(s => deIso(s) <= h || deIso(s) < deIso(ini[ini.length-1]));
-  data.dias.sort(); guardar(); pintar(); toast('Listo: registré el final de tu periodo');
+  const ini = inicios(); if (!ini.length){ toast('Primero registra el inicio de tu periodo'); return; }
+  const h = hoy(), start = deIso(ini[ini.length-1]);
+  if (difDias(start, h) > 10){ toast('Primero toca «Me llegó hoy» o marca el inicio en el calendario'); return; }
+  let d = start; while (d <= h){ const s = iso(d); if (!data.dias.includes(s)) data.dias.push(s); d = sumar(d,1); }
+  data.dias.sort(); guardar(); pintarTodo(); toast('Listo: registré el final de tu periodo');
 }
 
-function pintar(){
-  document.getElementById('hoy').textContent = hoy().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'short'});
-  pintarResumen(); pintarCalendario();
+/* ---------- REGISTRO ---------- */
+function chips(cont, lista, multiple, clase){
+  const el = $(cont); el.innerHTML = '';
+  lista.forEach(v => {
+    const b = document.createElement('button'); b.className = 'chip ' + (clase||''); b.textContent = v; b.dataset.v = v;
+    b.onclick = () => {
+      if (multiple){ b.classList.toggle('on'); }
+      else { const on = b.classList.contains('on'); el.querySelectorAll('.chip').forEach(x=>x.classList.remove('on')); if(!on) b.classList.add('on'); }
+      if (cont === 'rFlujo' && b.classList.contains('on') && v !== 'Manchado') $('rPeriodo').checked = true;
+    };
+    el.appendChild(b);
+  });
+}
+function abrirRegistro(s){
+  if (!data) return;
+  if (deIso(s) > hoy()){ toast('Solo puedes registrar días que ya pasaron'); return; }
+  diaSel = s; irA('registro');
+}
+function cargarRegistro(){
+  if (!diaSel) diaSel = iso(hoy());
+  $('dFecha').value = diaSel; $('dFecha').max = iso(hoy());
+  const r = data.registros[diaSel] || {};
+  $('rPeriodo').checked = data.dias.includes(diaSel);
+  chips('rFlujo', FLUJOS, false, 'flujo'); chips('rSint', SINTOMAS, true); chips('rAnimo', ANIMOS, true);
+  if (r.flujo) $('rFlujo').querySelectorAll('.chip').forEach(b => { if (b.dataset.v === r.flujo) b.classList.add('on'); });
+  (r.sintomas||[]).forEach(v => $('rSint').querySelectorAll('.chip').forEach(b => { if (b.dataset.v === v) b.classList.add('on'); }));
+  (r.animos||[]).forEach(v => $('rAnimo').querySelectorAll('.chip').forEach(b => { if (b.dataset.v === v) b.classList.add('on'); }));
+  $('rNotas').value = r.notas || '';
+  $('dNext').style.visibility = diaSel >= iso(hoy()) ? 'hidden' : 'visible';
+}
+function guardarRegistro(){
+  const sel = q => [...$(q).querySelectorAll('.chip.on')].map(b => b.dataset.v);
+  const r = { flujo: sel('rFlujo')[0] || '', sintomas: sel('rSint'), animos: sel('rAnimo'), notas: $('rNotas').value.trim() };
+  if (tieneDatos(r)) data.registros[diaSel] = r; else delete data.registros[diaSel];
+  const esPer = $('rPeriodo').checked;
+  const i = data.dias.indexOf(diaSel);
+  if (esPer && i < 0) data.dias.push(diaSel);
+  if (!esPer && i >= 0) data.dias.splice(i,1);
+  data.dias.sort(); guardar(); pintarTodo(); $('rPeriodo').checked = data.dias.includes(diaSel);
+  toast('Registro guardado');
+}
+function cambiarDia(n){
+  const d = sumar(deIso(diaSel), n);
+  if (d > hoy()) return;
+  diaSel = iso(d); cargarRegistro();
 }
 
-document.getElementById('prev').onclick = () => { vista.setMonth(vista.getMonth()-1); pintarCalendario(); };
-document.getElementById('next').onclick = () => { vista.setMonth(vista.getMonth()+1); pintarCalendario(); };
-document.getElementById('btnLlego').onclick = () => data && marcarLlego();
-document.getElementById('btnTermino').onclick = () => data && marcarTermino();
-document.getElementById('btnEmpezar').onclick = () => {
-  const u = document.getElementById('inUltimo').value;
-  const ciclo = Math.min(45, Math.max(20, parseInt(document.getElementById('inCiclo').value) || 28));
-  const per = Math.min(10, Math.max(2, parseInt(document.getElementById('inPeriodo').value) || 5));
-  if (!u){ toast('Elige la fecha de tu último periodo'); return; }
-  if (deIso(u) > hoy()){ toast('La fecha no puede ser futura'); return; }
-  data = { ciclo, periodo: per, dias: [] };
-  for (let i=0;i<per;i++){ const d = sumar(deIso(u),i); if (d <= hoy()) data.dias.push(iso(d)); }
-  guardar();
-  document.getElementById('bienvenida').classList.remove('show');
-  pintar();
+/* ---------- HISTORIAL ---------- */
+function pintarHistorial(){
+  const ini = inicios(), l = largosCiclos();
+  $('sNum').textContent = l.length;
+  $('sCiclo').textContent = l.length ? cicloProm() : data.ciclo + '*';
+  $('sPer').textContent = ini.length ? periodoProm() : '–';
+  $('sVar').textContent = l.length >= 2 ? (Math.max(...l) - Math.min(...l)) + ' días' : '–';
+
+  let aviso = '';
+  const cp = cicloProm(), pp = periodoProm();
+  if (l.length >= 2 && (cp < 21 || cp > 35)) aviso = 'Tu ciclo promedio es de ' + cp + ' días. Los ciclos menores de 21 o mayores de 35 días vale la pena comentarlos con tu médico.';
+  else if (l.length >= 3 && Math.max(...l) - Math.min(...l) > 9) aviso = 'Tus ciclos varían bastante entre sí. Puede ser normal, pero si se repite, coméntalo en tu próxima cita.';
+  else if (ini.length >= 2 && pp > 7) aviso = 'Tu periodo dura en promedio ' + pp + ' días. Si dura más de 7 días con frecuencia, consúltalo con tu médico.';
+  $('hAviso').innerHTML = aviso ? '<div class="warn">' + aviso + '</div>' : '';
+
+  const lc = $('hCiclos');
+  if (!ini.length) lc.innerHTML = '<p class="empty">Aún no hay ciclos registrados.</p>';
+  else {
+    lc.innerHTML = ini.slice().reverse().slice(0,12).map((s, idx, arr) => {
+      const pos = ini.indexOf(s), sig = ini[pos+1];
+      const largo = sig ? difDias(deIso(s), deIso(sig)) + ' días de ciclo' : 'Ciclo actual';
+      return '<div class="it"><div><b>' + fmtL(deIso(s)) + '</b><br><small>Periodo de ' + largoPeriodo(s) + ' días</small></div><small>' + largo + '</small></div>';
+    }).join('');
+  }
+  pintarHistMetodo();
+  pintarConteo('hSint', 'sintomas', 'Registra síntomas en el día a día para ver tus patrones.');
+  pintarConteo('hAnimo', 'animos', 'Registra cómo te sientes para ver tu ánimo a lo largo del ciclo.');
+}
+function pintarConteo(cont, campo, vacio){
+  const cuenta = {}; let dias = 0;
+  Object.values(data.registros).forEach(r => { if ((r[campo]||[]).length) dias++; (r[campo]||[]).forEach(v => cuenta[v] = (cuenta[v]||0) + 1); });
+  const top = Object.entries(cuenta).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if (!top.length){ $(cont).innerHTML = '<p class="empty">' + vacio + '</p>'; return; }
+  const max = top[0][1];
+  $(cont).innerHTML = top.map(([k,v]) => '<div class="it" style="display:block"><div style="display:flex;justify-content:space-between"><span>' + k + '</span><small>' + v + (v===1?' día':' días') + '</small></div><div class="bar"><i style="width:' + Math.round(v/max*100) + '%"></i></div></div>').join('');
+}
+function informe(){
+  const ini = inicios(), l = largosCiclos();
+  const filas = ini.slice().reverse().slice(0,12).map(s => {
+    const pos = ini.indexOf(s), sig = ini[pos+1];
+    return '<tr><td>' + fmtL(deIso(s)) + '</td><td>' + largoPeriodo(s) + ' días</td><td>' + (sig ? difDias(deIso(s), deIso(sig)) + ' días' : 'En curso') + '</td></tr>';
+  }).join('') || '<tr><td colspan="3">Sin ciclos registrados</td></tr>';
+  const cuenta = (campo) => { const c={}; Object.values(data.registros).forEach(r=>(r[campo]||[]).forEach(v=>c[v]=(c[v]||0)+1)); return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>k+' ('+v+')').join(', ') || 'Sin registros'; };
+  const notas = Object.entries(data.registros).filter(([k,r])=>r.notas).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,10)
+    .map(([k,r]) => '<tr><td>' + fmtL(deIso(k)) + '</td><td>' + esc(r.notas) + '</td></tr>').join('') || '<tr><td colspan="2">Sin notas</td></tr>';
+  $('informe').innerHTML =
+    '<h1>Informe de ciclo menstrual</h1>' +
+    '<div>' + (data.nombre ? 'Nombre: ' + esc(data.nombre) + ' · ' : '') + 'Generado el ' + fmtL(hoy()) + ' con Luna (LV Studio Apps)</div>' +
+    '<h2>Resumen</h2><table><tr><th>Ciclo promedio</th><th>Periodo promedio</th><th>Ciclos registrados</th><th>Variación</th></tr>' +
+    '<tr><td>' + (l.length ? cicloProm() + ' días' : 'Sin datos suficientes') + '</td><td>' + (ini.length ? periodoProm() + ' días' : '–') + '</td><td>' + l.length + '</td><td>' + (l.length>=2 ? (Math.max(...l)-Math.min(...l)) + ' días' : '–') + '</td></tr></table>' +
+    '<h2>Últimos ciclos</h2><table><tr><th>Inicio del periodo</th><th>Duración del periodo</th><th>Duración del ciclo</th></tr>' + filas + '</table>' +
+    '<h2>Método anticonceptivo</h2><div>' + textoMetodo() + '</div>' +
+    '<h2>Síntomas más frecuentes</h2><div>' + cuenta('sintomas') + '</div>' +
+    '<h2>Ánimo registrado</h2><div>' + cuenta('animos') + '</div>' +
+    '<h2>Notas recientes</h2><table><tr><th>Fecha</th><th>Nota</th></tr>' + notas + '</table>' +
+    '<div class="pie">Datos registrados por la usuaria. Este informe es una ayuda para la consulta y no constituye un diagnóstico.</div>';
+  window.print();
+}
+
+/* ---------- AJUSTES ---------- */
+function pintarAjustes(){
+  $('aNombre').value = data.nombre || ''; $('aCiclo').value = data.ciclo; $('aPer').value = data.periodo;
+  $('aPinEstado').textContent = data.pin ? 'El PIN está activo. Luna lo pedirá cada vez que la abras.' : 'Protege Luna con un PIN de 4 números.';
+  $('aPin').textContent = data.pin ? 'Quitar PIN' : 'Activar PIN';
+  const m = data.metodo;
+  $('aMetodoTxt').textContent = m ? METODOS[m.tipo][1] + (m.nombre ? ' · ' + m.nombre : '') + ' · ' + frecTxt(m) : 'No has registrado ningún método.';
+  $('aMetodo').textContent = m ? 'Editar método' : 'Agregar método';
+  $('aMetodoQuitar').style.display = m ? 'block' : 'none';
+}
+async function hash(t){
+  try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('luna:' + t)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
+  catch(e){ let h=0; for (const ch of 'luna:'+t) h = (h*31 + ch.charCodeAt(0)) | 0; return 'x' + h; }
+}
+function exportar(){
+  const blob = new Blob([JSON.stringify({app:'Luna', version:1, fecha: iso(hoy()), datos: data}, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'luna-copia-' + iso(hoy()) + '.json';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  toast('Copia descargada');
+}
+function importar(file){
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const j = JSON.parse(r.result), d = j.datos || j;
+      if (!d || !Array.isArray(d.dias) || !d.ciclo) throw 0;
+      confirmar('¿Restaurar esta copia?', 'Se reemplazarán los datos actuales de este celular por los de la copia del ' + (j.fecha || 'archivo') + '.', () => {
+        data = d; normalizar(); guardar(); pintarTodo(); toast('Copia restaurada');
+      });
+    } catch(e){ toast('Ese archivo no es una copia válida de Luna'); }
+  };
+  r.readAsText(file);
+}
+
+/* ---------- PIN ---------- */
+let pinBuf = '', pinModo = 'abrir', pinPrimero = '';
+function armarTeclado(){
+  const k = $('lKeys'); k.innerHTML = '';
+  ['1','2','3','4','5','6','7','8','9','','0','⌫'].forEach(v => {
+    const b = document.createElement('button'); b.textContent = v; if (!v) b.className = 'blank';
+    b.onclick = () => tecla(v); k.appendChild(b);
+  });
+}
+function puntos(){ $('lDots').querySelectorAll('i').forEach((d,i)=>d.classList.toggle('f', i < pinBuf.length)); }
+function mostrarLock(modo){
+  pinModo = modo; pinBuf = ''; pinPrimero = ''; puntos();
+  $('lTit').textContent = modo === 'abrir' ? 'Luna está protegida' : 'Crea tu PIN';
+  $('lTxt').textContent = modo === 'abrir' ? 'Escribe tu PIN' : 'Escribe 4 números';
+  $('lCancel').style.display = modo === 'abrir' ? 'none' : 'block';
+  $('lock').classList.add('show');
+}
+async function tecla(v){
+  if (v === '⌫'){ pinBuf = pinBuf.slice(0,-1); puntos(); return; }
+  if (!v || pinBuf.length >= 4) return;
+  pinBuf += v; puntos();
+  if (pinBuf.length < 4) return;
+  if (pinModo === 'abrir'){
+    if (await hash(pinBuf) === data.pin){ $('lock').classList.remove('show'); }
+    else { error('PIN incorrecto'); }
+  } else if (!pinPrimero){
+    pinPrimero = pinBuf; pinBuf = ''; setTimeout(puntos, 150); $('lTxt').textContent = 'Repite tu PIN';
+  } else if (pinBuf === pinPrimero){
+    data.pin = await hash(pinBuf); guardar(); $('lock').classList.remove('show'); pintarAjustes(); toast('PIN activado');
+  } else { pinPrimero = ''; error('No coinciden. Escribe 4 números'); }
+}
+function error(t){
+  $('lTxt').textContent = t; const d = $('lDots'); d.classList.add('shake');
+  setTimeout(()=>{ d.classList.remove('shake'); pinBuf=''; puntos(); }, 400);
+}
+
+/* ---------- MÉTODO ANTICONCEPTIVO ---------- */
+const METODOS = {
+  pastilla:['💊','Pastilla','diaria'], inyeccion:['💉','Inyección','mensual'], parche:['🩹','Parche','semanal'],
+  anillo:['⭕','Anillo vaginal','mensual'], implante:['📍','Implante','anios',3], diu_cobre:['🔩','DIU de cobre','anios',10],
+  diu_hormonal:['🔹','DIU hormonal','anios',5], condon:['🛡️','Condón','ninguna'], otro:['➕','Otro método','dias']
 };
+const ACC = {
+  pastilla:['tomar tu pastilla','Ya la tomé'], inyeccion:['aplicarte la inyección','Me la apliqué hoy'], parche:['cambiar el parche','Ya lo cambié'],
+  anillo:['cambiar el anillo','Ya lo cambié'], implante:['cambiar o retirar el implante','Registrar cambio'], diu_cobre:['cambiar o retirar el DIU','Registrar cambio'],
+  diu_hormonal:['cambiar o retirar el DIU','Registrar cambio'], condon:['',''], otro:['tu siguiente dosis','Ya lo hice']
+};
+function frecTxt(m){
+  return {diaria:'Diaria', semanal:'Semanal', mensual:'Mensual', trimestral:'Cada 3 meses', semestral:'Cada 6 meses', anual:'Anual',
+    anios:'Cada ' + (m.anios||1) + (m.anios==1?' año':' años'), dias:'Cada ' + (m.dias||30) + ' días', ninguna:'Sin recordatorio'}[m.frec] + (m.descanso && (m.frec==='diaria'||m.frec==='semanal') ? ' · 3 semanas + 1 de descanso' : '');
+}
+function hora12(h){ if(!h) return ''; const [H,M] = h.split(':').map(Number); const ap = H>=12 ? 'p. m.' : 'a. m.'; return ((H%12)||12) + ':' + String(M).padStart(2,'0') + ' ' + ap; }
+function addMeses(d,n){ const x = new Date(d.getFullYear(), d.getMonth()+n, 1); const ult = new Date(x.getFullYear(), x.getMonth()+1, 0).getDate(); x.setDate(Math.min(d.getDate(), ult)); return x; }
+function paso(m, d, k){
+  k = k || 1;
+  switch(m.frec){
+    case 'mensual': return addMeses(d,k);
+    case 'trimestral': return addMeses(d,3*k);
+    case 'semestral': return addMeses(d,6*k);
+    case 'anual': return addMeses(d,12*k);
+    case 'anios': return addMeses(d,12*(m.anios||1)*k);
+    case 'dias': return sumar(d,(m.dias||30)*k);
+    case 'semanal': return sumar(d,7*k);
+    default: return sumar(d,k);
+  }
+}
+function enDescanso(m, d){
+  if (!m.descanso || (m.frec!=='diaria' && m.frec!=='semanal')) return false;
+  const p = ((difDias(deIso(m.fecha), d) % 28) + 28) % 28; return p >= 21;
+}
+function proximaFecha(m){
+  if (!m || m.frec === 'ninguna') return null;
+  const h = hoy();
+  if (m.frec === 'diaria'){ let d = h; if (d < deIso(m.fecha)) d = deIso(m.fecha); let n=0; while (enDescanso(m,d) && n++ < 8) d = sumar(d,1); return d; }
+  if (m.frec === 'semanal'){
+    const s = deIso(m.fecha); let d = s;
+    if (s < h){ d = sumar(s, 7*Math.ceil(difDias(s,h)/7)); }
+    if (iso(d) === iso(h) && (m.aplic||[]).includes(iso(h))) d = sumar(d,7);
+    let n=0; while (enDescanso(m,d) && n++ < 3) d = sumar(d,7);
+    return d;
+  }
+  return paso(m, deIso(m.fecha));
+}
+function racha(m){
+  const set = new Set(m.tomas||[]); let d = hoy(), n = 0;
+  if (!set.has(iso(d))) d = sumar(d,-1);
+  for (let i=0;i<400;i++){
+    if (d < deIso(m.fecha)) break;
+    if (enDescanso(m,d)){ d = sumar(d,-1); continue; }
+    if (!set.has(iso(d))) break;
+    n++; d = sumar(d,-1);
+  }
+  return n;
+}
+function cuandoTxt(dias){ return dias === 0 ? 'hoy' : dias === 1 ? 'mañana' : 'en ' + dias + ' días'; }
 
-document.getElementById('inUltimo').max = iso(hoy());
-if (!data){ data = null; document.getElementById('bienvenida').classList.add('show'); }
-if (!data){ pintarCalendario(); document.getElementById('hoy').textContent = hoy().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'short'}); }
-else pintar();
-</script>
-</body>
-</html>
+function pintarMetodo(){
+  const box = $('metodoCard'), m = data && data.metodo;
+  if (!m){
+    box.innerHTML = '<div class="top"><div class="mi">🛡️</div><div><b>Método anticonceptivo</b><small>Opcional</small></div></div>' +
+      '<p class="estado">¿Usas pastillas, inyección, parche u otro método? Regístralo y Luna te mostrará cuándo te toca.</p>' +
+      '<button class="btn ghost" id="mAbrir">Agregar mi método</button>';
+    $('mAbrir').onclick = () => abrirMetodo();
+    return;
+  }
+  const [ico, nom] = METODOS[m.tipo], [acc, btn] = ACC[m.tipo];
+  let estado = '', clase = '', boton = '';
+  const h = hoy(), hi = iso(h);
+  if (m.frec === 'ninguna'){
+    estado = 'Registrado como tu método. No necesita recordatorio.';
+  } else if (m.frec === 'diaria'){
+    if (deIso(m.fecha) > h) estado = 'Empiezas el <b>' + fmt(deIso(m.fecha)) + '</b>.';
+    else if (enDescanso(m,h)) estado = 'Semana de descanso 🌙 Retomas el <b>' + fmt(proximaFecha(m)) + '</b>.';
+    else if ((m.tomas||[]).includes(hi)) estado = '✅ Ya registraste tu toma de hoy. Racha: <b>' + racha(m) + (racha(m)===1?' día':' días') + '</b>.';
+    else { estado = 'Hoy te toca ' + acc + (m.hora ? ' a las <b>' + hora12(m.hora) + '</b>' : '') + '.'; boton = btn; }
+  } else {
+    const p = proximaFecha(m), dif = difDias(h, p);
+    if ((m.aplic||[]).includes(hi) && m.frec !== 'semanal') estado = '✅ Registrado hoy. Próxima: <b>' + fmtL(p) + '</b>.';
+    else if (dif < 0){
+      clase = 'mal';
+      estado = 'Te tocaba ' + acc + ' el <b>' + fmt(p) + '</b> (hace ' + (-dif) + (dif===-1?' día':' días') + '). Consulta a tu médico o farmacéutico antes de continuar: podrías necesitar protección adicional.';
+      boton = btn;
+    } else {
+      estado = (dif === 0 ? 'Hoy te toca ' + acc : 'Próxima vez: <b>' + fmtL(p) + '</b> · ' + cuandoTxt(dif)) + (dif <= 1 && m.hora ? ' a las <b>' + hora12(m.hora) + '</b>' : '') + '.';
+      if (dif <= 3) boton = btn;
+      if (m.frec === 'semanal' && (m.aplic||[]).includes(hi)) { estado = '✅ Registrado hoy. ' + estado; boton = ''; }
+    }
+  }
+  estado = estado.replace(/\.\.$/, '.').replace(/\.<\/b>\.$/, '.</b>');
+  box.innerHTML = '<div class="top"><div class="mi">' + ico + '</div><div><b>' + nom + (m.nombre ? ' · ' + esc(m.nombre) : '') + '</b><small>' + frecTxt(m) + '</small></div></div>' +
+    '<p class="estado ' + clase + '">' + estado + '</p>' +
+    (boton ? '<button class="btn full" id="mReg">' + boton + '</button>' : '') +
+    '<div class="links">' + (m.frec !== 'ninguna' ? '<button class="lnk" id="mIcs">🔔 Agregar recordatorio al calendario</button>' : '<span></span>') + '<button class="lnk" id="mEdit">Editar</button></div>';
+  if ($('mReg')) $('mReg').onclick = registrarMetodo;
+  if ($('mIcs')) $('mIcs').onclick = descargarIcs;
+  $('mEdit').onclick = () => abrirMetodo();
+}
+function registrarMetodo(){
+  const m = data.metodo, hi = iso(hoy());
+  if (m.frec === 'diaria'){ m.tomas = (m.tomas||[]).filter(x=>x!==hi); m.tomas.push(hi); m.tomas = m.tomas.slice(-400); }
+  else {
+    m.aplic = (m.aplic||[]).filter(x=>x!==hi); m.aplic.push(hi); m.aplic = m.aplic.slice(-100);
+    if (m.frec !== 'semanal') m.fecha = hi;
+  }
+  guardar(); pintarTodo(); toast('Listo, quedó registrado');
+}
+function fechasMetodo(y, mo){
+  const res = new Set(), m = data && data.metodo;
+  if (!m || m.frec === 'diaria' || m.frec === 'ninguna') return res;
+  const ini = new Date(y,mo,1), fin = new Date(y,mo+1,0), h = hoy();
+  if (m.frec === 'semanal'){
+    let d = deIso(m.fecha);
+    if (d < ini) d = sumar(d, 7*Math.floor(difDias(d,ini)/7));
+    while (d <= fin){ if (d >= ini && d >= h && !enDescanso(m,d)) res.add(iso(d)); d = sumar(d,7); }
+    return res;
+  }
+  const base = proximaFecha(m);
+  for (let k=0;k<40;k++){ const d = k===0 ? base : paso(m, base, k); if (d > fin) break; if (d >= ini) res.add(iso(d)); }
+  return res;
+}
+function descargarIcs(){
+  const m = data.metodo, acc = ACC[m.tipo][0];
+  const s = proximaFecha(m) || hoy(), [hh,mi] = (m.hora || '20:00').split(':');
+  const f = d => d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+  const rr = {diaria:'FREQ=DAILY', semanal:'FREQ
