@@ -481,6 +481,21 @@
   </div>
 </div>
 
+<!-- Recordatorio -->
+<div class="overlay" id="recSheet">
+  <div class="sheet">
+    <h2 id="recTit">🔔 ¿Quieres que te avise?</h2>
+    <p id="recTxt"></p>
+    <div class="card" style="box-shadow:none;border:1.5px solid var(--line);padding:14px;margin-bottom:14px">
+      <p class="small" id="recAlarmas" style="margin:0"></p>
+    </div>
+    <button class="btn full" id="recIcs">📅 Calendario del celular</button>
+    <button class="btn ghost" id="recGoogle">🗓️ Google Calendar</button>
+    <button class="btn ghost" id="recNo" style="border:none;color:var(--muted)">Ahora no</button>
+    <p class="small" style="margin-top:12px">En iPhone, si se abre una vista previa, toca <b>Agregar todo</b>. Si el archivo queda en Descargas, ábrelo desde ahí. El aviso solo dice «☾ Recordatorio», nadie más sabrá de qué se trata.</p>
+  </div>
+</div>
+
 <!-- Nueva etiqueta -->
 <div class="overlay" id="etiqSheet">
   <div class="sheet">
@@ -1243,9 +1258,11 @@ function pintarMetodo(){
   box.innerHTML = '<div class="top"><div class="mi">' + ico + '</div><div><b>' + nom + (m.nombre ? ' · ' + esc(m.nombre) : '') + '</b><small>' + frecTxt(m) + '</small></div></div>' +
     '<p class="estado ' + clase + '">' + estado + '</p>' +
     (boton ? '<button class="btn full" id="mReg">' + boton + '</button>' : '') +
-    '<div class="links">' + (m.frec !== 'ninguna' ? '<button class="lnk" id="mIcs">🔔 Agregar recordatorio al calendario</button>' : '<span></span>') + '<button class="lnk" id="mEdit">Editar</button></div>';
+    (recPendiente(m) ? '<p class="estado mal" style="margin-top:4px">⚠️ Tu recordatorio del calendario quedó con la fecha anterior. <button class="lnk" id="mRecUpd" style="color:#9F1239;text-decoration:underline">Actualizarlo</button></p>' : '') +
+    '<div class="links">' + (m.frec === 'ninguna' ? '<span></span>' : (m.recordatorio && !recPendiente(m) ? '<button class="lnk" id="mIcs" style="color:var(--ok)">🔔 Recordatorio activo ✓</button>' : '<button class="lnk" id="mIcs">🔔 ' + (recPendiente(m) ? 'Actualizar' : 'Activar') + ' recordatorio</button>')) + '<button class="lnk" id="mEdit">Editar</button></div>';
   if ($('mReg')) $('mReg').onclick = registrarMetodo;
-  if ($('mIcs')) $('mIcs').onclick = descargarIcs;
+  if ($('mIcs')) $('mIcs').onclick = () => abrirRecordatorio(recPendiente(m) ? 'cambio' : 'nuevo');
+  if ($('mRecUpd')) $('mRecUpd').onclick = () => abrirRecordatorio('cambio');
   $('mEdit').onclick = () => abrirMetodo();
 }
 function registrarMetodo(){
@@ -1256,6 +1273,7 @@ function registrarMetodo(){
     if (m.frec !== 'semanal') m.fecha = hi;
   }
   guardar(); pintarTodo(); toast('Listo, quedó registrado');
+  if (recPendiente(m)) setTimeout(() => abrirRecordatorio('cambio'), 700);
 }
 function fechasMetodo(y, mo){
   const res = new Set(), m = data && data.metodo;
@@ -1284,11 +1302,67 @@ function descargarIcs(){
   if (rr) L.push('RRULE:' + rr);
   L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:☾ Recordatorio','TRIGGER:PT0M','END:VALARM');
   if (m.frec !== 'diaria') L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:☾ Mañana tienes un recordatorio','TRIGGER:-P1D','END:VALARM');
+  if (['semestral','anual','anios'].includes(m.frec) || (m.frec === 'dias' && (m.dias||30) >= 60)) L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:☾ En una semana tienes un recordatorio','TRIGGER:-P7D','END:VALARM');
   L.push('END:VEVENT','END:VCALENDAR');
   const blob = new Blob([L.join('\r\n')], {type:'text/calendar'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'recordatorio.ics';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  marcarRecordatorio();
   toast('Abre el archivo y toca «Agregar» en tu calendario');
+}
+
+/* ---------- RECORDATORIOS ---------- */
+function baseRec(m){ return (m.frec === 'diaria' || m.frec === 'semanal') ? m.fecha : iso(proximaFecha(m)); }
+function marcarRecordatorio(){
+  const m = data.metodo;
+  m.recordatorio = { frec: m.frec, hora: m.hora, dias: m.dias || 0, anios: m.anios || 0, descanso: !!m.descanso, base: baseRec(m), fecha: iso(hoy()) };
+  guardar(); $('recSheet').classList.remove('show'); pintarMetodo();
+}
+function recPendiente(m){
+  const r = m && m.recordatorio;
+  if (!r || m.frec === 'ninguna') return false;
+  if (r.frec !== m.frec || r.hora !== m.hora || (r.dias||0) !== (m.dias||0) || (r.anios||0) !== (m.anios||0) || !!r.descanso !== !!m.descanso) return true;
+  if (m.frec === 'diaria' || m.frec === 'semanal') return r.base !== m.fecha;
+  const p = iso(proximaFecha(m));
+  if (m.frec === 'anios') return r.base !== p;
+  // Recordatorio que se repite: sigue sirviendo si la próxima fecha cae en la misma serie
+  const ancla = deIso(r.base);
+  for (let k=0;k<240;k++){ const d = iso(k === 0 ? ancla : paso(m, ancla, k)); if (d === p) return false; if (d > p) return true; }
+  return true;
+}
+function alarmasTxt(m){
+  const h = hora12(m.hora || '20:00');
+  if (m.frec === 'diaria') return ('⏰ Te avisará <b>todos los días a las ' + h + '</b>' + (m.descanso ? ' (en tu semana de descanso puedes ignorarlo)' : '') + '.').replace(/\.<\/b>\./g, '.</b>');
+  let t = '⏰ Te avisará <b>el día anterior</b> y <b>el mismo día a las ' + h + '</b>';
+  if (['semestral','anual','anios'].includes(m.frec) || (m.frec === 'dias' && (m.dias||30) >= 60)) t += ', y también <b>una semana antes</b>';
+  return (t + '. Próxima fecha: <b>' + fmtL(proximaFecha(m)) + '</b>.').replace(/\.<\/b>\./g, '.</b>').replace(/\.\./g, '.');
+}
+function abrirRecordatorio(motivo){
+  const m = data.metodo; if (!m || m.frec === 'ninguna') return;
+  const acc = ACC[m.tipo][0];
+  if (motivo === 'cambio'){
+    $('recTit').textContent = '🔔 Actualiza tu recordatorio';
+    $('recTxt').innerHTML = 'Tu próxima fecha para ' + acc + ' cambió. Agrega el recordatorio nuevo y <b>borra el anterior</b> de tu calendario (ábrelo y toca «Eliminar evento») para que no te avise en la fecha vieja.';
+  } else {
+    $('recTit').textContent = '🔔 ¿Quieres que te avise?';
+    $('recTxt').textContent = 'Agrega un recordatorio a tu calendario y te sonará una alarma aunque Luna esté cerrada o no tengas internet.';
+  }
+  $('recAlarmas').innerHTML = alarmasTxt(m);
+  $('recSheet').classList.add('show');
+}
+function abrirGoogle(){
+  const m = data.metodo, acc = ACC[m.tipo][0];
+  const s = proximaFecha(m) || hoy(), [hh,mi] = (m.hora || '20:00').split(':');
+  const f = d => d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+  const fin = new Date(s); fin.setHours(+hh, +mi + 15);
+  const rr = {diaria:'FREQ=DAILY', semanal:'FREQ=WEEKLY', mensual:'FREQ=MONTHLY', trimestral:'FREQ=MONTHLY;INTERVAL=3', semestral:'FREQ=MONTHLY;INTERVAL=6', anual:'FREQ=YEARLY', dias:'FREQ=DAILY;INTERVAL=' + (m.dias||30)}[m.frec];
+  const p = new URLSearchParams({ action:'TEMPLATE', text:'☾ Recordatorio ' + (data.alias || 'Luna'),
+    dates: f(s) + 'T' + hh + mi + '00/' + f(fin) + 'T' + String(fin.getHours()).padStart(2,'0') + String(fin.getMinutes()).padStart(2,'0') + '00',
+    details: 'Recuerda ' + acc + '. Si cambias de fecha, vuelve a agregar el recordatorio desde Luna.', ctz: 'America/Bogota' });
+  if (rr) p.set('recur', 'RRULE:' + rr);
+  window.open('https://calendar.google.com/calendar/render?' + p.toString(), '_blank');
+  marcarRecordatorio();
+  toast('En Google Calendar toca «Guardar»');
 }
 function textoMetodo(){
   const m = data.metodo; if (!m) return 'No registrado';
@@ -1374,6 +1448,9 @@ $('etiqOk').onclick = () => {
   if (!data.etiquetas.some(x => x.toLowerCase() === t.toLowerCase())) data.etiquetas.push(t);
   sel.push(t); guardar(); armarEtiquetas(sel); $('etiqSheet').classList.remove('show'); contar();
 };
+$('recIcs').onclick = descargarIcs;
+$('recGoogle').onclick = abrirGoogle;
+$('recNo').onclick = () => $('recSheet').classList.remove('show');
 $('etiqNo').onclick = () => $('etiqSheet').classList.remove('show');
 document.querySelectorAll('#gTabs button').forEach(b => b.onclick = () => { grafico = b.dataset.g; pintarGrafico(); });
 $('btnInforme').onclick = informe;
@@ -1416,7 +1493,12 @@ $('mGuardar').onclick = () => {
     tomas: mismo ? (prev.tomas || []) : [], aplic: mismo ? (prev.aplic || []) : []
   };
   if (frec !== 'diaria' && frec !== 'semanal' && frec !== 'ninguna' && !data.metodo.aplic.includes(fecha)) data.metodo.aplic.push(fecha);
+  if (prev.recordatorio && mismo) data.metodo.recordatorio = prev.recordatorio;
   guardar(); $('metodoSheet').classList.remove('show'); pintarTodo(); pintarAjustes(); toast('Método guardado');
+  if (frec !== 'ninguna'){
+    if (!data.metodo.recordatorio) setTimeout(() => abrirRecordatorio('nuevo'), 500);
+    else if (recPendiente(data.metodo)) setTimeout(() => abrirRecordatorio('cambio'), 500);
+  }
 };
 $('btnEmpezar').onclick = () => {
   const u = $('inUltimo').value;
