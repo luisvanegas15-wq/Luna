@@ -5,21 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Luna · LV Studio</title>
 <meta name="theme-color" content="#7C3AED">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%237C3AED'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white'%3E%E2%98%BE%3C/text%3E%3Ccircle cx='82' cy='18' r='7' fill='%23FACC15'/%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Luna" id="metaTitulo">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#FBF7FF; --card:#FFFFFF; --ink:#2E1065; --muted:#7A6E93; --line:#EDE7F6;
-    --period:#E11D74; --soft:#FCE7F3; --pred:#F472B6; --fertile:#DDD6FE; --ovu:#7C3AED; --accent:#7C3AED;
+    --bg:#FBF7FF; --card:#FFFFFF; --ink:#2E1065; --muted:#7A6E93; --line:#EDE7F6; --soft2:#F3E8FF;
+    --period:#E11D74; --pred:#F472B6; --fertile:#DDD6FE; --ovu:#7C3AED; --accent:#7C3AED; --ok:#16A34A; --bad:#DB2777;
+  }
+  [data-tema="oscuro"]{
+    --bg:#140B26; --card:#1F1535; --ink:#F3E8FF; --muted:#B5A6D3; --line:#3A2C5C; --soft2:#2C1F4A;
+    --fertile:#4B3A86; --pred:#F472B6; --accent:#8B5CF6; --ovu:#7C3AED;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{overflow-x:hidden;max-width:100%}
-  body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
-  input,select,textarea{font-size:16px !important}
-  .wrap{max-width:480px;margin:0 auto;padding:18px 16px 110px}
+  body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;transition:background .2s}
+  input,select,textarea{font-size:16px !important;font-family:inherit;color:var(--ink);background:var(--card)}
+  .wrap{max-width:480px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 16px 110px}
   header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
   .brand{display:flex;align-items:center;gap:10px}
-  .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#C084FC,#7C3AED);display:grid;place-items:center;color:#fff;font-size:20px;position:relative}
+  .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#C084FC,#6D28D9);display:grid;place-items:center;color:#fff;font-size:20px;position:relative;flex:none}
   .logo::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#FACC15}
   .brand h1{font-size:20px;font-weight:700;line-height:1}
   .brand small{font-size:11px;color:var(--muted)}
@@ -28,6 +38,7 @@
 
   .card{background:var(--card);border-radius:22px;padding:18px;box-shadow:0 6px 24px rgba(124,58,237,.08);margin-bottom:14px}
   .card h3{font-size:15px;margin-bottom:10px}
+  .card h3 small{font-weight:400;color:var(--muted);font-size:12px}
   .hero{display:flex;gap:16px;align-items:center}
   .ring{position:relative;width:128px;height:128px;flex:none}
   .ring svg{transform:rotate(-90deg)}
@@ -41,14 +52,16 @@
   .tipcard{display:flex;gap:12px;align-items:flex-start}
   .tipcard .ico{font-size:24px;line-height:1}
   .tipcard p{font-size:13px;color:var(--muted);line-height:1.5}
-  .tipcard b{display:block;color:var(--ink);font-size:14px;margin-bottom:2px}
+  .tipcard p > b{display:block;color:var(--ink);font-size:14px;margin-bottom:2px}
+  .tipcard p span b{color:var(--ink)}
+  .insight{border:1.5px solid var(--line)}
 
   .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
   .btn{border:none;border-radius:16px;padding:14px 10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
   .btn.main{background:var(--period);color:#fff}
-  .btn.alt{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  .btn.alt{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
   .btn.full{width:100%;background:var(--accent);color:#fff}
-  .btn.ghost{width:100%;background:#fff;color:var(--accent);border:1.5px solid var(--line)}
+  .btn.ghost{width:100%;background:var(--card);color:var(--accent);border:1.5px solid var(--line)}
   .btn.danger{width:100%;background:#FEE2E2;color:#B91C1C}
   .btn+.btn{margin-top:8px}
 
@@ -60,12 +73,18 @@
   .day{aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font-size:13px;cursor:pointer;position:relative;border:2px solid transparent}
   .day.out{visibility:hidden}
   .day.period{background:var(--period);color:#fff;font-weight:600}
-  .day.pred{border:2px dashed var(--pred);color:var(--period)}
+  .day.pred{border:2px dashed var(--pred);color:var(--pred)}
   .day.fertile{background:var(--fertile)}
   .day.ovu{background:var(--ovu);color:#fff;font-weight:600}
   .day.today{outline:2px solid var(--ink);outline-offset:1px}
   .day.log::after{content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:#F59E0B}
-  .day.dose::before{content:"";position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:#0EA5E9;border:1.5px solid #fff}
+  .day.dose::before{content:"";position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:#0EA5E9;border:1.5px solid var(--card)}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 12px;margin-top:14px;font-size:11px;color:var(--muted)}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-2px}
+  .tip{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
+  .note{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;padding:6px 10px}
+
+  /* Método */
   .metodo .top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
   .metodo .mi{width:44px;height:44px;border-radius:14px;background:#E0F2FE;display:grid;place-items:center;font-size:22px;flex:none}
   .metodo .top b{display:block;font-size:15px}
@@ -73,54 +92,78 @@
   .metodo .estado{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px}
   .metodo .estado b{color:var(--ink)}
   .metodo .estado.mal{background:#FFE4E6;color:#9F1239;border-radius:14px;padding:10px 12px}
-  .metodo .links{display:flex;justify-content:space-between;margin-top:10px}
+  .metodo .estado.mal b{color:#9F1239}
+  .links{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}
   .lnk{border:none;background:none;font-family:inherit;font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;padding:4px 0}
-  select{width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:15px;color:var(--ink);background:#fff;-webkit-appearance:none;appearance:none}
+  select{width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line);-webkit-appearance:none;appearance:none}
   .chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;margin-bottom:14px;line-height:1.4}
   .chk input{width:20px;height:20px;accent-color:var(--accent);flex:none;margin-top:1px}
-  .legend{display:flex;flex-wrap:wrap;gap:10px 12px;margin-top:14px;font-size:11px;color:var(--muted)}
-  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-2px}
-  .tip{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
-  .note{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;padding:6px 10px}
 
   /* Registro */
   .daynav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
-  .daynav input{flex:1;padding:11px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:15px;color:var(--ink);text-align:center;background:#fff}
-  .switch{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600}
+  .daynav input{flex:1;padding:11px;border-radius:14px;border:1.5px solid var(--line);text-align:center}
+  .switch{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;gap:10px}
   .switch input{display:none}
   .switch .sl{width:50px;height:30px;border-radius:30px;background:var(--line);position:relative;transition:.2s;flex:none}
   .switch .sl::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s}
   .switch input:checked+.sl{background:var(--period)}
   .switch input:checked+.sl::after{left:23px}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:8px 12px;font-family:inherit;font-size:13px;color:var(--ink);cursor:pointer}
+  .chip{border:1.5px solid var(--line);background:var(--card);border-radius:20px;padding:8px 12px;font-family:inherit;font-size:13px;color:var(--ink);cursor:pointer}
   .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .chip.flujo.on{background:var(--period);border-color:var(--period)}
-  textarea{width:100%;min-height:90px;padding:12px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:14px;color:var(--ink);resize:vertical}
+  .chip.rosa.on{background:var(--period);border-color:var(--period)}
+  .chip.add{border-style:dashed;color:var(--accent)}
+  .sub{font-size:12px;font-weight:600;color:var(--muted);margin:12px 0 8px}
+  .sub:first-child{margin-top:0}
+  .ayuda{font-size:12px;color:var(--muted);margin:-4px 0 10px;line-height:1.4}
+  details.card{padding:0}
+  details.card summary{list-style:none;padding:16px 18px;font-size:15px;font-weight:600;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+  details.card summary::-webkit-details-marker{display:none}
+  details.card summary::after{content:"＋";color:var(--accent);font-size:18px}
+  details.card[open] summary::after{content:"－"}
+  details.card summary .cnt{font-size:12px;font-weight:500;color:var(--accent);margin-left:auto;margin-right:10px}
+  details.card .body{padding:0 18px 18px}
+  .stepper{display:flex;align-items:center;gap:12px}
+  .stepper button{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:20px;cursor:pointer}
+  .stepper b{font-size:18px;min-width:90px;text-align:center}
+  textarea{width:100%;min-height:90px;padding:12px;border-radius:14px;border:1.5px solid var(--line);resize:vertical}
+  .regbar{position:sticky;bottom:84px;z-index:3;padding-top:6px}
 
   /* Historial */
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-  .stat{background:#fff;border-radius:18px;padding:14px;box-shadow:0 6px 24px rgba(124,58,237,.06)}
+  .stat{background:var(--card);border-radius:18px;padding:14px;box-shadow:0 6px 24px rgba(124,58,237,.06)}
   .stat b{display:block;font-size:24px;line-height:1.1}
   .stat span{font-size:12px;color:var(--muted)}
-  .list .it{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .list .it{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
   .list .it:last-child{border-bottom:none}
   .list .it small{color:var(--muted)}
+  .list .it.excl{opacity:.5}
+  .mini{border:1.5px solid var(--line);background:var(--card);color:var(--muted);border-radius:10px;font-family:inherit;font-size:11px;padding:4px 8px;cursor:pointer;flex:none}
   .bar{height:8px;border-radius:8px;background:var(--line);margin-top:4px;overflow:hidden}
   .bar i{display:block;height:100%;background:var(--accent);border-radius:8px}
   .warn{background:#FEF3C7;color:#92400E;border-radius:16px;padding:12px 14px;font-size:13px;line-height:1.5;margin-bottom:14px}
-  .empty{font-size:13px;color:var(--muted);text-align:center;padding:10px}
+  .empty{font-size:13px;color:var(--muted);text-align:center;padding:10px;line-height:1.5}
+  .ins{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.5}
+  .ins:last-child{border-bottom:none}
+  .ins span:first-child{font-size:18px;line-height:1.3}
+  .chart{width:100%;height:auto;display:block}
+  .chart text{font-family:Poppins,sans-serif;fill:var(--muted)}
+  .tabs2{display:flex;gap:6px;margin-bottom:12px}
+  .tabs2 button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;padding:8px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+  .tabs2 button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 
   /* Ajustes */
   .field{margin-bottom:14px}
   .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
-  .field input{width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line);font-family:inherit;font-size:15px;color:var(--ink);background:#fff}
+  .field input{width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line)}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .small{font-size:12px;color:var(--muted);line-height:1.5}
-  .small a{color:var(--accent)}
+  .small b{color:var(--ink)}
+  .pasos{font-size:13px;color:var(--muted);line-height:1.6;padding-left:18px;margin:8px 0 12px}
+  .pasos b{color:var(--ink)}
 
   /* Barra inferior */
-  .tabbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
   .tabbar .in{display:grid;grid-template-columns:repeat(4,1fr);width:100%;max-width:480px}
   .tab{border:none;background:none;font-family:inherit;font-size:11px;color:var(--muted);padding:10px 0 12px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
   .tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -129,12 +172,12 @@
   .view.on{display:block}
 
   /* Capas */
-  .overlay{position:fixed;inset:0;background:rgba(46,16,101,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
+  .overlay{position:fixed;inset:0;background:rgba(20,8,45,.5);display:none;align-items:flex-end;justify-content:center;z-index:20}
   .overlay.show{display:flex}
-  .sheet{background:#fff;width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:24px 20px 30px;max-height:92vh;overflow:auto}
+  .sheet{background:var(--card);width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:24px 20px calc(30px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
   .sheet h2{font-size:20px;margin-bottom:6px}
   .sheet p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
-  .lock{position:fixed;inset:0;background:linear-gradient(160deg,#C084FC,#7C3AED);z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:20px}
+  .lock{position:fixed;inset:0;background:linear-gradient(160deg,#C084FC,#6D28D9);z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:20px}
   .lock.show{display:flex}
   .lock h2{font-size:22px;margin:10px 0 4px}
   .lock p{font-size:13px;opacity:.85;margin-bottom:20px}
@@ -146,19 +189,20 @@
   .keys button.blank{visibility:hidden}
   .shake{animation:sh .35s}
   @keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
-  .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:40;width:max-content;max-width:90vw;text-align:center}
+  .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#3B0764;color:#fff;padding:10px 16px;border-radius:14px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:40;width:max-content;max-width:90vw;text-align:center}
   .toast.show{opacity:1}
 
   /* Informe para imprimir */
   #informe{display:none}
   @media print{
-    body{background:#fff}
+    body{background:#fff;color:#111}
     .wrap,.tabbar,.overlay,.lock,.toast{display:none !important}
     #informe{display:block;padding:20px;font-size:12px;color:#111}
     #informe h1{font-size:20px;margin-bottom:4px}
     #informe h2{font-size:14px;margin:16px 0 6px}
     #informe table{width:100%;border-collapse:collapse}
     #informe td,#informe th{border:1px solid #ccc;padding:5px 7px;text-align:left}
+    #informe li{margin:0 0 4px 16px}
     #informe .pie{margin-top:18px;font-size:10px;color:#555}
   }
 </style>
@@ -167,8 +211,8 @@
 <div class="wrap">
   <header>
     <div class="brand">
-      <div class="logo">☾</div>
-      <div><h1>Luna</h1><small>LV Studio Apps</small></div>
+      <div class="logo" id="logoIco">☾</div>
+      <div><h1 id="appNombre">Luna</h1><small>LV Studio Apps</small></div>
     </div>
     <div class="hello" id="hola"></div>
   </header>
@@ -178,7 +222,7 @@
     <div class="card hero">
       <div class="ring">
         <svg width="128" height="128" viewBox="0 0 132 132">
-          <circle cx="66" cy="66" r="56" fill="none" stroke="#F3E8FF" stroke-width="12"/>
+          <circle cx="66" cy="66" r="56" fill="none" stroke="var(--soft2)" stroke-width="12"/>
           <circle id="arc" cx="66" cy="66" r="56" fill="none" stroke="#E11D74" stroke-width="12" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352"/>
         </svg>
         <div class="in"><span>Día</span><b id="dia">–</b><span id="de">de tu ciclo</span></div>
@@ -196,6 +240,11 @@
     </div>
 
     <div class="card metodo" id="metodoCard"></div>
+
+    <div class="card tipcard insight" id="insightCard" style="display:none">
+      <div class="ico">💡</div>
+      <p><b>Luna notó algo</b><span id="insightTxt"></span><br><button class="lnk" id="insightMas">Ver todos tus patrones →</button></p>
+    </div>
 
     <div class="card tipcard" id="faseTip">
       <div class="ico" id="tipIco">🌙</div>
@@ -233,24 +282,31 @@
     <div class="card">
       <label class="switch">¿Tuviste periodo este día?<input type="checkbox" id="rPeriodo"><span class="sl"></span></label>
     </div>
-    <div class="card">
-      <h3>Flujo</h3>
-      <div class="chips" id="rFlujo"></div>
-    </div>
-    <div class="card">
-      <h3>Síntomas</h3>
-      <div class="chips" id="rSint"></div>
-    </div>
-    <div class="card">
-      <h3>¿Cómo te sentiste?</h3>
-      <div class="chips" id="rAnimo"></div>
-    </div>
+    <div id="rCampos"></div>
+    <details class="card" id="rExtra">
+      <summary>💧 Agua y peso<span class="cnt" id="cntExtra"></span></summary>
+      <div class="body">
+        <div class="sub">Vasos de agua</div>
+        <div class="stepper"><button id="aguaMenos">−</button><b id="aguaVal">0 vasos</b><button id="aguaMas">+</button></div>
+        <div class="sub" style="margin-top:16px">Peso (kg, opcional)</div>
+        <div class="field" style="margin:0"><input type="number" id="rPeso" step="0.1" min="20" max="250" placeholder="Ej.: 58.5"></div>
+      </div>
+    </details>
+    <details class="card" id="rEtiq">
+      <summary>🏷️ Mis etiquetas<span class="cnt" id="cntEtiq"></span></summary>
+      <div class="body">
+        <p class="ayuda">Crea las tuyas: «Tomé café», «Fui al gym», «Día de examen», «Medicamento»…</p>
+        <div class="chips" id="rEtiquetas"></div>
+      </div>
+    </details>
     <div class="card">
       <h3>Notas</h3>
       <textarea id="rNotas" placeholder="Ej.: dormí poco, tomé un analgésico, tuve una semana estresante…"></textarea>
     </div>
-    <button class="btn full" id="rGuardar">Guardar registro</button>
-    <button class="btn ghost" id="rBorrar">Borrar el registro de este día</button>
+    <div class="regbar">
+      <button class="btn full" id="rGuardar">Guardar registro</button>
+    </div>
+    <button class="btn ghost" id="rBorrar" style="margin-top:8px">Borrar el registro de este día</button>
   </section>
 
   <!-- HISTORIAL -->
@@ -264,10 +320,24 @@
       <div class="stat"><b id="sVar">–</b><span>Variación entre ciclos</span></div>
     </div>
     <div class="card">
+      <h3>💡 Tus patrones <small>· lo que Luna aprendió de ti</small></h3>
+      <div id="hInsights"></div>
+    </div>
+    <div class="card">
+      <h3>📊 Gráficos</h3>
+      <div class="tabs2" id="gTabs">
+        <button data-g="ciclos" class="on">Ciclos</button>
+        <button data-g="animo">Ánimo por fase</button>
+        <button data-g="sintomas">Síntomas por fase</button>
+      </div>
+      <div id="gArea"></div>
+    </div>
+    <div class="card">
       <h3>Tus ciclos</h3>
+      <p class="small" style="margin-bottom:6px">Si un ciclo fue atípico (enfermedad, cambio de método, olvidaste registrar), exclúyelo para que no afecte tus promedios.</p>
       <div class="list" id="hCiclos"></div>
     </div>
-    <div class="card" id="hMetodoCard">
+    <div class="card">
       <h3>Tu método anticonceptivo</h3>
       <div class="list" id="hMetodo"></div>
     </div>
@@ -286,6 +356,12 @@
   <!-- AJUSTES -->
   <section class="view" id="v-ajustes">
     <h2 class="sec">Ajustes</h2>
+    <div class="card" id="instalarCard">
+      <h3>📲 Instala Luna en tu celular</h3>
+      <p class="small">Así la abres desde tu pantalla de inicio, como cualquier app, y funciona aunque no tengas internet.</p>
+      <ol class="pasos" id="pasosInstalar"></ol>
+      <button class="btn full" id="btnInstalar" style="display:none">Instalar Luna</button>
+    </div>
     <div class="card">
       <h3>Tus datos</h3>
       <div class="field"><label>¿Cómo te llamo?</label><input type="text" id="aNombre" placeholder="Tu nombre (opcional)" maxlength="30"></div>
@@ -295,6 +371,16 @@
       </div>
       <p class="small" style="margin-bottom:12px">Estos valores se usan hasta que registres 2 ciclos. Después Luna calcula el promedio con tus propios datos.</p>
       <button class="btn full" id="aGuardar">Guardar cambios</button>
+    </div>
+    <div class="card">
+      <h3>Apariencia y privacidad</h3>
+      <div class="field"><label>Tema</label>
+        <select id="aTema"><option value="auto">Automático (como tu celular)</option><option value="claro">Claro</option><option value="oscuro">Oscuro</option></select>
+      </div>
+      <div class="field"><label>Modo discreto: nombre visible</label>
+        <select id="aAlias"><option value="Luna">Luna ☾</option><option value="Mi agenda">Mi agenda 📅</option><option value="Mis notas">Mis notas 📝</option></select>
+      </div>
+      <p class="small">Cambia el nombre que se ve arriba y en la pestaña del navegador. Si quieres que el acceso directo del celular también se llame así, elígelo <b>antes</b> de instalar Luna.</p>
     </div>
     <div class="card">
       <h3>Método anticonceptivo</h3>
@@ -324,7 +410,7 @@
       <p class="small" style="margin-bottom:12px">Elimina todos tus registros de este celular. No se puede deshacer.</p>
       <button class="btn danger" id="aBorrarTodo">Borrar todos mis datos</button>
     </div>
-    <p class="note">Luna v1.0 · LV Studio Apps · Soporte por WhatsApp: <a href="https://wa.me/573187179215" style="color:var(--accent)">318 717 9215</a></p>
+    <p class="note">Luna v2.0 · LV Studio Apps · Soporte por WhatsApp: <a href="https://wa.me/573187179215" style="color:var(--accent)">318 717 9215</a></p>
   </section>
 </div>
 
@@ -386,12 +472,23 @@
     <div class="field" id="mAniosF" style="display:none"><label>¿Cada cuántos años?</label><input type="number" id="mAnios" min="1" max="12" value="3"></div>
     <div class="field" id="mDiasF" style="display:none"><label>¿Cada cuántos días?</label><input type="number" id="mDias" min="1" max="365" value="30"></div>
     <label class="chk" id="mDescF"><input type="checkbox" id="mDesc"><span>Incluye semana de descanso (3 semanas de uso y 1 de descanso)</span></label>
-    <div class="row">
-      <div class="field" id="mFechaF"><label id="mFechaL">Fecha de inicio</label><input type="date" id="mFecha"></div>
+    <div class="row" id="mFechaRow">
+      <div class="field"><label id="mFechaL">Fecha de inicio</label><input type="date" id="mFecha"></div>
       <div class="field"><label>Hora del recordatorio</label><input type="time" id="mHora" value="20:00"></div>
     </div>
     <button class="btn full" id="mGuardar">Guardar método</button>
     <button class="btn ghost" id="mCancelar">Cancelar</button>
+  </div>
+</div>
+
+<!-- Nueva etiqueta -->
+<div class="overlay" id="etiqSheet">
+  <div class="sheet">
+    <h2>Nueva etiqueta</h2>
+    <p>Algo que quieras seguir en tu día a día y ver cómo se relaciona con tu ciclo.</p>
+    <div class="field"><input type="text" id="etiqTxt" maxlength="24" placeholder="Ej.: Tomé café"></div>
+    <button class="btn full" id="etiqOk">Crear etiqueta</button>
+    <button class="btn ghost" id="etiqNo">Cancelar</button>
   </div>
 </div>
 
@@ -421,9 +518,24 @@
 <script>
 const KEY = 'luna_lv_v1';
 const DAY = 86400000;
-const FLUJOS = ['Manchado','Leve','Medio','Abundante'];
-const SINTOMAS = ['Cólicos','Dolor de cabeza','Hinchazón','Senos sensibles','Acné','Cansancio','Dolor de espalda','Antojos','Náuseas','Insomnio','Cambios en el flujo vaginal'];
-const ANIMOS = ['Feliz','Tranquila','Con energía','Sensible','Irritable','Ansiosa','Triste'];
+
+/* ---------- catálogos del registro ---------- */
+const CAMPOS = [
+  {id:'flujo', ico:'🩸', tit:'Sangrado', tipo:'uno', clase:'rosa', ops:['Manchado','Leve','Medio','Abundante']},
+  {id:'sintomas', ico:'🤕', tit:'Dolor y cuerpo', tipo:'varios', grupos:[
+    ['Dolor', ['Cólicos','Dolor de cabeza','Migraña','Dolor de espalda','Dolor en las piernas','Dolor en las articulaciones','Senos sensibles']],
+    ['Cuerpo', ['Hinchazón','Acné','Cansancio','Mareo','Sofocos','Sudores nocturnos','Piel grasa','Piel seca']],
+    ['Digestión y apetito', ['Náuseas','Diarrea','Estreñimiento','Gases','Antojos de dulce','Antojos de salado','Más apetito','Menos apetito']]
+  ]},
+  {id:'animos', ico:'🧠', tit:'¿Cómo te sentiste?', tipo:'varios', ops:['Feliz','Tranquila','Con energía','Motivada','Sensible','Irritable','Ansiosa','Triste','Estresada','Abrumada','Cambios de ánimo']},
+  {id:'energia', ico:'⚡', tit:'Energía', tipo:'uno', ops:['Alta','Normal','Baja']},
+  {id:'sueno', ico:'😴', tit:'Sueño', tipo:'uno', ops:['Dormí bien','Dormí mal','Insomnio','Mucho sueño']},
+  {id:'moco', ico:'💧', tit:'Flujo vaginal', tipo:'uno', ayuda:'El flujo transparente y elástico, como clara de huevo, suele aparecer cerca de la ovulación.', ops:['Seco','Pegajoso','Cremoso','Como clara de huevo','Acuoso','Inusual (color u olor)']},
+  {id:'deseo', ico:'❤️', tit:'Deseo sexual', tipo:'uno', ops:['Alto','Normal','Bajo']},
+  {id:'relacion', ico:'🔒', tit:'Relaciones sexuales', tipo:'uno', ops:['No','Con protección','Sin protección']}
+];
+const NEGATIVOS = ['Sensible','Irritable','Ansiosa','Triste','Estresada','Abrumada','Cambios de ánimo'];
+const POSITIVOS = ['Feliz','Tranquila','Con energía','Motivada'];
 const TIPS = {
   'Menstrual':['🩸','Fase menstrual','Es normal tener menos energía. Descansa, hidrátate y usa calor en el vientre para los cólicos. Si el dolor no te deja hacer tu vida, consúltalo con tu médico.'],
   'Folicular':['🌱','Fase folicular','Después del periodo, muchas mujeres sienten más energía y mejor ánimo. Buen momento para empezar proyectos o entrenar con más intensidad.'],
@@ -435,8 +547,7 @@ const TIPS = {
 
 let data = cargar();
 let vista = new Date(); vista.setDate(1);
-let diaSel = null;
-let reg = null; // registro en edición
+let diaSel = null, agua = 0, grafico = 'ciclos';
 
 /* ---------- utilidades ---------- */
 function cargar(){ try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch(e){ return null; } }
@@ -450,14 +561,35 @@ function fmt(d){ return d.toLocaleDateString('es-CO',{day:'numeric',month:'short
 function fmtL(d){ return d.toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'}); }
 function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-let tT; function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>el.classList.remove('show'),2200); }
-function normalizar(){ data.dias = data.dias || []; data.registros = data.registros || {}; data.nombre = data.nombre || ''; }
-
+let tT; function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>el.classList.remove('show'),2400); }
+function normalizar(){
+  data.dias = data.dias || []; data.registros = data.registros || {}; data.nombre = data.nombre || '';
+  data.excluidos = data.excluidos || []; data.etiquetas = data.etiquetas || [];
+  data.tema = data.tema || 'auto'; data.alias = data.alias || 'Luna';
+}
 function confirmar(tit, txt, si){
   $('cTit').textContent = tit; $('cTxt').textContent = txt;
   $('confirmar').classList.add('show');
   $('cSi').onclick = () => { $('confirmar').classList.remove('show'); si(); };
   $('cNo').onclick = () => $('confirmar').classList.remove('show');
+}
+function pct(a,b){ return b ? Math.round(a/b*100) : 0; }
+
+/* ---------- tema y modo discreto ---------- */
+const mqOscuro = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+function aplicarTema(){
+  const t = (data && data.tema) || 'auto';
+  const oscuro = t === 'oscuro' || (t === 'auto' && mqOscuro && mqOscuro.matches);
+  document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro');
+  document.querySelector('meta[name=theme-color]').setAttribute('content', oscuro ? '#140B26' : '#7C3AED');
+}
+if (mqOscuro && mqOscuro.addEventListener) mqOscuro.addEventListener('change', aplicarTema);
+function aplicarAlias(){
+  const a = (data && data.alias) || 'Luna';
+  const ico = {'Luna':'☾','Mi agenda':'📅','Mis notas':'📝'}[a] || '☾';
+  $('appNombre').textContent = a; $('logoIco').textContent = ico;
+  document.title = a === 'Luna' ? 'Luna · LV Studio' : a;
+  $('metaTitulo').setAttribute('content', a);
 }
 
 /* ---------- cálculos del ciclo ---------- */
@@ -465,15 +597,20 @@ function inicios(){
   const set = new Set(data.dias);
   return data.dias.filter(s => !set.has(iso(sumar(deIso(s),-1)))).sort();
 }
-function largosCiclos(){
+function ciclosInfo(){
+  // lista de ciclos cerrados: {ini, fin(siguiente inicio), largo, excluido}
   const ini = inicios(), out = [];
-  for (let i=1;i<ini.length;i++){ const d=difDias(deIso(ini[i-1]),deIso(ini[i])); if(d>=15 && d<=60) out.push(d); }
+  for (let i=1;i<ini.length;i++){
+    const largo = difDias(deIso(ini[i-1]), deIso(ini[i]));
+    out.push({ini: ini[i-1], sig: ini[i], largo, excluido: data.excluidos.includes(ini[i-1]) || largo < 15 || largo > 60});
+  }
   return out;
 }
+function largosCiclos(){ return ciclosInfo().filter(c => !c.excluido).map(c => c.largo); }
 function largoPeriodo(s){ const set=new Set(data.dias); let n=0, d=deIso(s); while(set.has(iso(d))){ n++; d=sumar(d,1);} return n; }
 function cicloProm(){ const l = largosCiclos().slice(-6); return l.length ? Math.round(l.reduce((a,b)=>a+b,0)/l.length) : data.ciclo; }
 function periodoProm(){
-  const ini = inicios().slice(-6); if (!ini.length) return data.periodo;
+  const ini = inicios().filter(s => !data.excluidos.includes(s)).slice(-6); if (!ini.length) return data.periodo;
   const l = ini.map(largoPeriodo); return Math.round(l.reduce((a,b)=>a+b,0)/l.length) || data.periodo;
 }
 function calcular(){
@@ -496,7 +633,98 @@ function fase(c){
   if (h < c.fertilIni) return 'Folicular';
   return 'Lútea';
 }
+/* Ubica cualquier día pasado dentro de su ciclo */
+function infoDia(s){
+  const ini = inicios(), d = deIso(s);
+  let i = -1; for (let k=0;k<ini.length;k++){ if (ini[k] <= s) i = k; else break; }
+  if (i < 0) return null;
+  const start = deIso(ini[i]), sig = ini[i+1] ? deIso(ini[i+1]) : null;
+  const L = sig ? difDias(start, sig) : cicloProm();
+  const cd = difDias(start, d) + 1;
+  if (cd > L + 7) return null;
+  const antes = sig ? difDias(d, sig) : (L - cd + 1);
+  const per = largoPeriodo(ini[i]), ovuDia = L - 14;
+  let f;
+  if (cd <= per) f = 'Menstrual';
+  else if (cd >= ovuDia - 5 && cd <= ovuDia + 1) f = 'Fértil';
+  else if (cd < ovuDia - 5) f = 'Folicular';
+  else f = 'Lútea';
+  return { cd, antes, fase: f, inicio: ini[i] };
+}
 const COLFASE = {'Menstrual':['#FCE7F3','#BE185D'],'Folicular':['#E0F2FE','#0369A1'],'Días fértiles':['#EDE9FE','#6D28D9'],'Ovulación':['#EDE9FE','#6D28D9'],'Lútea':['#FEF3C7','#B45309'],'Retraso':['#FFE4E6','#BE123C']};
+
+/* ---------- ANÁLISIS AUTOMÁTICOS ---------- */
+function analisis(){
+  const out = [];
+  const regs = Object.entries(data.registros);
+  const conDia = regs.map(([s,r]) => ({s, r, i: infoDia(s)})).filter(x => x.i);
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+
+  // Ciclos
+  const l = largosCiclos();
+  if (l.length >= 2){
+    const ult = l[l.length-1], prev = l.slice(0,-1), avg = Math.round(prev.reduce((a,b)=>a+b,0)/prev.length), dif = ult - avg;
+    if (Math.abs(dif) >= 4) out.push(['📅', 'Tu último ciclo duró <b>' + ult + ' días</b>, ' + Math.abs(dif) + ' días ' + (dif > 0 ? 'más largo' : 'más corto') + ' que tu promedio. El estrés, el sueño o cambios de rutina pueden influir; si se repite, coméntalo con tu médico.']);
+    else if (l.length >= 3 && Math.max(...l) - Math.min(...l) <= 3) out.push(['🎯', 'Tus ciclos son <b>muy regulares</b>: ' + ((Math.max(...l) - Math.min(...l)) === 0 ? 'duran lo mismo.' : 'solo varían ' + (Math.max(...l) - Math.min(...l)) + ((Math.max(...l) - Math.min(...l)) === 1 ? ' día' : ' días') + ' entre sí.') + ' Por eso las predicciones de Luna son más precisas para ti.']);
+  }
+  // Periodo largo
+  const iniV = inicios().filter(s => !data.excluidos.includes(s));
+  if (iniV.length >= 3){
+    const lp = iniV.map(largoPeriodo), ultP = lp[lp.length-1], avgP = lp.slice(0,-1).reduce((a,b)=>a+b,0)/(lp.length-1);
+    if (ultP - avgP >= 2) out.push(['🩸', 'Tu último periodo duró <b>' + ultP + ' días</b>, más de lo habitual para ti (' + Math.round(avgP) + ' días).']);
+  }
+  // Síntomas: cuándo aparecen
+  const cuenta = {};
+  conDia.forEach(x => (x.r.sintomas||[]).forEach(v => (cuenta[v] = cuenta[v] || []).push(x.i)));
+  Object.entries(cuenta).sort((a,b) => b[1].length - a[1].length).slice(0,6).forEach(([sint, arr]) => {
+    if (arr.length < 3) return;
+    const n = arr.length;
+    const prim = arr.filter(i => i.fase === 'Menstrual' && i.cd <= 3).length;
+    const pre = arr.filter(i => i.fase !== 'Menstrual' && i.antes >= 1 && i.antes <= 6).length;
+    const fert = arr.filter(i => i.fase === 'Fértil').length;
+    if (prim / n >= 0.6) out.push(['🤕', '<b>' + sint + '</b> aparece sobre todo en los primeros días del periodo (' + prim + ' de ' + n + ' veces). Tener a mano lo que te alivia esos días puede ayudarte.']);
+    else if (pre / n >= 0.6) out.push(['📌', '<b>' + sint + '</b> aparece sobre todo en la semana antes de tu periodo (' + pre + ' de ' + n + ' veces). Es una señal típica del síndrome premenstrual.']);
+    else if (fert / n >= 0.6) out.push(['🌸', '<b>' + sint + '</b> aparece sobre todo en tus días fértiles (' + fert + ' de ' + n + ' veces).']);
+  });
+  // Ánimo
+  const neg = [], pos = [];
+  conDia.forEach(x => { const a = x.r.animos || []; if (a.some(v => NEGATIVOS.includes(v))) neg.push(x.i); if (a.some(v => POSITIVOS.includes(v))) pos.push(x.i); });
+  if (neg.length >= 3){
+    const pre = neg.filter(i => i.fase !== 'Menstrual' && i.antes >= 1 && i.antes <= 7).length;
+    if (pre / neg.length >= 0.5) out.push(['🧠', 'Tu ánimo tiende a bajar <b>la semana antes de tu periodo</b> (' + pre + ' de ' + neg.length + ' días difíciles). Es un patrón común: planear días más livianos, dormir bien y avisarle a tu gente puede hacer la diferencia.']);
+  }
+  if (pos.length >= 3){
+    const fol = pos.filter(i => i.fase === 'Folicular' || i.fase === 'Fértil').length;
+    if (fol / pos.length >= 0.6) out.push(['✨', 'Tus mejores días de ánimo suelen estar <b>después del periodo y hasta tus días fértiles</b>. Aprovéchalos para lo que más energía te pide.']);
+  }
+  // Sueño y energía
+  const malSueno = conDia.filter(x => ['Dormí mal','Insomnio'].includes(x.r.sueno));
+  if (malSueno.length >= 3){
+    const pre = malSueno.filter(x => x.i.fase !== 'Menstrual' && x.i.antes >= 1 && x.i.antes <= 7).length;
+    if (pre / malSueno.length >= 0.5) out.push(['😴', 'Duermes peor en <b>los días antes de tu periodo</b> (' + pre + ' de ' + malSueno.length + ' noches). Evitar pantallas y cafeína en la noche esos días puede ayudarte.']);
+  }
+  const bajaE = conDia.filter(x => x.r.energia === 'Baja');
+  if (bajaE.length >= 3){
+    const men = bajaE.filter(x => x.i.fase === 'Menstrual').length;
+    if (men / bajaE.length >= 0.6) out.push(['🔋', 'Tu energía baja sobre todo <b>durante el periodo</b>. Es normal: date permiso de bajar el ritmo esos días.']);
+  }
+  // Etiquetas
+  data.etiquetas.forEach(et => {
+    const conEt = conDia.filter(x => (x.r.etiquetas||[]).includes(et));
+    if (conEt.length < 4) return;
+    const conNeg = conEt.filter(x => (x.r.animos||[]).some(v => NEGATIVOS.includes(v))).length;
+    const sinEt = conDia.filter(x => !(x.r.etiquetas||[]).includes(et) && (x.r.animos||[]).length);
+    const sinNeg = sinEt.filter(x => (x.r.animos||[]).some(v => NEGATIVOS.includes(v))).length;
+    if (sinEt.length >= 4 && conNeg/conEt.length - sinNeg/sinEt.length >= 0.3) out.push(['🏷️', 'Los días con «<b>' + esc(et) + '</b>» registras más ánimo difícil (' + pct(conNeg, conEt.length) + '% frente a ' + pct(sinNeg, sinEt.length) + '% de los demás días).']);
+  });
+  // Método
+  const m = data.metodo;
+  if (m && m.frec === 'diaria' && (m.tomas||[]).length){
+    const a = adherencia(m);
+    if (a.toca >= 7 && a.tomo / a.toca < 0.9) out.push(['💊', 'Registraste <b>' + a.tomo + ' de ' + a.toca + '</b> tomas en los últimos 30 días. Activa el recordatorio en tu calendario para no olvidarla.']);
+  }
+  return out.slice(0, 8);
+}
 
 /* ---------- INICIO ---------- */
 function pintarInicio(){
@@ -514,22 +742,28 @@ function pintarInicio(){
   } else {
     const f = fase(c), [bg,col] = COLFASE[f];
     $('dia').textContent = c.diaCiclo; $('de').textContent = 'de ' + c.ciclo;
-    $('fase').textContent = f === 'Retraso' ? 'Retraso' : f; $('fase').style.background = bg; $('fase').style.color = col;
+    $('fase').textContent = f; $('fase').style.background = bg; $('fase').style.color = col;
     if (c.retraso > 0){
       $('titulo').textContent = c.retraso === 1 ? 'Tu periodo lleva 1 día de retraso' : 'Tu periodo lleva ' + c.retraso + ' días de retraso';
       $('detalle').innerHTML = 'Lo esperabas el <b>' + fmt(c.esperado) + '</b>.<br>Cuando llegue, toca «Me llegó hoy».';
     } else {
       const faltan = difDias(hoy(), c.proximo);
       $('titulo').textContent = faltan === 0 ? 'Tu periodo podría llegar hoy' : (faltan === 1 ? 'Tu periodo llegaría mañana' : 'Tu periodo llegaría en ' + faltan + ' días');
-      $('detalle').innerHTML = 'Próximo periodo: <b>' + fmt(c.proximo) + '</b><br>Días fértiles: <b>' + fmt(c.fertilIni) + ' – ' + fmt(c.fertilFin) + '</b>';
+      let fert = c.fertilFin >= hoy() ? [c.fertilIni, c.fertilFin] : [sumar(c.fertilIni, c.ciclo), sumar(c.fertilFin, c.ciclo)];
+      $('detalle').innerHTML = 'Próximo periodo: <b>' + fmt(c.proximo) + '</b><br>Días fértiles: <b>' + fmt(fert[0]) + ' – ' + fmt(fert[1]) + '</b>';
     }
     arc.style.strokeDashoffset = 352 - 352 * Math.min(c.diaCiclo / c.ciclo, 1);
     const t = TIPS[f]; $('tipIco').textContent = t[0]; $('tipTit').textContent = t[1]; $('tipTxt').textContent = t[2];
     const hormonal = data.metodo && ['pastilla','inyeccion','parche','anillo','implante','diu_hormonal'].includes(data.metodo.tipo);
-    if (hormonal && (f === 'Días fértiles' || f === 'Ovulación' || f === 'Folicular' || f === 'Lútea'))
+    if (hormonal && f !== 'Menstrual' && f !== 'Retraso')
       $('tipTxt').textContent = 'Como usas un método hormonal, las fechas de ovulación y días fértiles del calendario son solo una referencia: tu método cambia la forma en que funciona tu ciclo. Sigue las indicaciones de tu médico.';
   }
-  if (data) { $('metodoCard').style.display = ''; pintarMetodo(); } else $('metodoCard').style.display = 'none';
+  if (data){
+    $('metodoCard').style.display = ''; pintarMetodo();
+    const ins = analisis();
+    if (ins.length){ const k = hoy().getDate() % ins.length; $('insightTxt').innerHTML = ins[k][1]; $('insightCard').style.display = ''; }
+    else $('insightCard').style.display = 'none';
+  } else { $('metodoCard').style.display = 'none'; $('insightCard').style.display = 'none'; }
   pintarCalendario();
 }
 
@@ -549,7 +783,7 @@ function pintarCalendario(){
       const p = sumar(c.proximo, k*c.ciclo);
       for (let i=0;i<c.per;i++) pred.add(iso(sumar(p,i)));
       const o = k===0 ? c.ovu : sumar(p,-14);
-      if (k===0 && c.retraso > 0) continue; // si hay retraso no se muestra la ventana fértil pasada
+      if (k===0 && c.retraso > 0) continue;
       ovus.add(iso(o));
       for (let i=-5;i<=1;i++) fert.add(iso(sumar(o,i)));
     }
@@ -572,7 +806,11 @@ function pintarCalendario(){
     grid.appendChild(el);
   }
 }
-function tieneDatos(r){ return r && (r.flujo || (r.sintomas && r.sintomas.length) || (r.animos && r.animos.length) || (r.notas && r.notas.trim())); }
+function tieneDatos(r){
+  if (!r) return false;
+  return !!(r.flujo || (r.sintomas||[]).length || (r.animos||[]).length || (r.etiquetas||[]).length || (r.notas && r.notas.trim()) ||
+    r.energia || r.sueno || r.moco || r.deseo || r.relacion || r.agua || r.peso);
+}
 
 function marcarLlego(){
   const s = iso(hoy());
@@ -588,17 +826,53 @@ function marcarTermino(){
 }
 
 /* ---------- REGISTRO ---------- */
-function chips(cont, lista, multiple, clase){
-  const el = $(cont); el.innerHTML = '';
+function chipsEn(el, lista, multiple, clase, onTap){
   lista.forEach(v => {
     const b = document.createElement('button'); b.className = 'chip ' + (clase||''); b.textContent = v; b.dataset.v = v;
     b.onclick = () => {
-      if (multiple){ b.classList.toggle('on'); }
+      if (multiple) b.classList.toggle('on');
       else { const on = b.classList.contains('on'); el.querySelectorAll('.chip').forEach(x=>x.classList.remove('on')); if(!on) b.classList.add('on'); }
-      if (cont === 'rFlujo' && b.classList.contains('on') && v !== 'Manchado') $('rPeriodo').checked = true;
+      if (onTap) onTap(b, v);
+      contar();
     };
     el.appendChild(b);
   });
+}
+function armarCampos(){
+  const cont = $('rCampos'); cont.innerHTML = '';
+  CAMPOS.forEach((c, idx) => {
+    const det = document.createElement('details'); det.className = 'card'; det.dataset.campo = c.id;
+    if (idx < 3) det.open = true;
+    det.innerHTML = '<summary>' + c.ico + ' ' + c.tit + '<span class="cnt"></span></summary><div class="body"></div>';
+    const body = det.querySelector('.body');
+    if (c.ayuda) body.insertAdjacentHTML('beforeend', '<p class="ayuda">' + c.ayuda + '</p>');
+    const onTap = c.id === 'flujo' ? (b, v) => { if (b.classList.contains('on') && v !== 'Manchado') $('rPeriodo').checked = true; } : null;
+    if (c.grupos){
+      c.grupos.forEach(([g, ops]) => {
+        body.insertAdjacentHTML('beforeend', '<div class="sub">' + g + '</div>');
+        const ch = document.createElement('div'); ch.className = 'chips'; body.appendChild(ch);
+        chipsEn(ch, ops, true, c.clase);
+      });
+    } else {
+      const ch = document.createElement('div'); ch.className = 'chips'; body.appendChild(ch);
+      chipsEn(ch, c.ops, c.tipo === 'varios', c.clase, onTap);
+    }
+    cont.appendChild(det);
+  });
+}
+function armarEtiquetas(sel){
+  const el = $('rEtiquetas'); el.innerHTML = '';
+  chipsEn(el, data.etiquetas, true, '');
+  (sel || []).forEach(v => el.querySelectorAll('.chip').forEach(b => { if (b.dataset.v === v) b.classList.add('on'); }));
+  const add = document.createElement('button'); add.className = 'chip add'; add.textContent = '＋ Nueva';
+  add.onclick = () => { $('etiqTxt').value = ''; $('etiqSheet').classList.add('show'); setTimeout(()=>$('etiqTxt').focus(), 100); };
+  el.appendChild(add);
+}
+function seleccion(el){ return [...el.querySelectorAll('.chip.on')].map(b => b.dataset.v); }
+function contar(){
+  document.querySelectorAll('#rCampos details').forEach(d => { const n = d.querySelectorAll('.chip.on').length; d.querySelector('.cnt').textContent = n ? n + ' ✓' : ''; });
+  const ne = $('rEtiquetas').querySelectorAll('.chip.on').length; $('cntEtiq').textContent = ne ? ne + ' ✓' : '';
+  $('cntExtra').textContent = (agua || $('rPeso').value) ? '✓' : '';
 }
 function abrirRegistro(s){
   if (!data) return;
@@ -610,37 +884,51 @@ function cargarRegistro(){
   $('dFecha').value = diaSel; $('dFecha').max = iso(hoy());
   const r = data.registros[diaSel] || {};
   $('rPeriodo').checked = data.dias.includes(diaSel);
-  chips('rFlujo', FLUJOS, false, 'flujo'); chips('rSint', SINTOMAS, true); chips('rAnimo', ANIMOS, true);
-  if (r.flujo) $('rFlujo').querySelectorAll('.chip').forEach(b => { if (b.dataset.v === r.flujo) b.classList.add('on'); });
-  (r.sintomas||[]).forEach(v => $('rSint').querySelectorAll('.chip').forEach(b => { if (b.dataset.v === v) b.classList.add('on'); }));
-  (r.animos||[]).forEach(v => $('rAnimo').querySelectorAll('.chip').forEach(b => { if (b.dataset.v === v) b.classList.add('on'); }));
+  armarCampos();
+  CAMPOS.forEach(c => {
+    const det = document.querySelector('#rCampos details[data-campo="' + c.id + '"]');
+    const val = r[c.id]; const vals = Array.isArray(val) ? val : (val ? [val] : []);
+    det.querySelectorAll('.chip').forEach(b => { if (vals.includes(b.dataset.v)) b.classList.add('on'); });
+    if (vals.length) det.open = true;
+  });
+  armarEtiquetas(r.etiquetas);
+  agua = r.agua || 0; $('aguaVal').textContent = agua + (agua === 1 ? ' vaso' : ' vasos');
+  $('rPeso').value = r.peso || '';
   $('rNotas').value = r.notas || '';
+  $('rEtiq').open = !!(r.etiquetas||[]).length; $('rExtra').open = !!(r.agua || r.peso);
   $('dNext').style.visibility = diaSel >= iso(hoy()) ? 'hidden' : 'visible';
+  contar();
 }
 function guardarRegistro(){
-  const sel = q => [...$(q).querySelectorAll('.chip.on')].map(b => b.dataset.v);
-  const r = { flujo: sel('rFlujo')[0] || '', sintomas: sel('rSint'), animos: sel('rAnimo'), notas: $('rNotas').value.trim() };
+  const r = {};
+  CAMPOS.forEach(c => {
+    const det = document.querySelector('#rCampos details[data-campo="' + c.id + '"]');
+    const sel = seleccion(det);
+    r[c.id] = c.tipo === 'varios' ? sel : (sel[0] || '');
+  });
+  r.etiquetas = seleccion($('rEtiquetas'));
+  r.agua = agua; const p = parseFloat($('rPeso').value); r.peso = isNaN(p) ? '' : Math.round(p*10)/10;
+  r.notas = $('rNotas').value.trim();
   if (tieneDatos(r)) data.registros[diaSel] = r; else delete data.registros[diaSel];
-  const esPer = $('rPeriodo').checked;
-  const i = data.dias.indexOf(diaSel);
+  const esPer = $('rPeriodo').checked, i = data.dias.indexOf(diaSel);
   if (esPer && i < 0) data.dias.push(diaSel);
   if (!esPer && i >= 0) data.dias.splice(i,1);
-  data.dias.sort(); guardar(); pintarTodo(); $('rPeriodo').checked = data.dias.includes(diaSel);
+  data.dias.sort(); guardar(); pintarInicio(); $('rPeriodo').checked = data.dias.includes(diaSel);
   toast('Registro guardado');
 }
 function cambiarDia(n){
   const d = sumar(deIso(diaSel), n);
   if (d > hoy()) return;
-  diaSel = iso(d); cargarRegistro();
+  diaSel = iso(d); cargarRegistro(); window.scrollTo(0,0);
 }
 
 /* ---------- HISTORIAL ---------- */
 function pintarHistorial(){
-  const ini = inicios(), l = largosCiclos();
+  const ini = inicios(), ci = ciclosInfo(), l = largosCiclos();
   $('sNum').textContent = l.length;
   $('sCiclo').textContent = l.length ? cicloProm() : data.ciclo + '*';
   $('sPer').textContent = ini.length ? periodoProm() : '–';
-  $('sVar').textContent = l.length >= 2 ? (Math.max(...l) - Math.min(...l)) + ' días' : '–';
+  $('sVar').textContent = l.length >= 2 ? (Math.max(...l) - Math.min(...l)) + ((Math.max(...l) - Math.min(...l)) === 1 ? ' día' : ' días') : '–';
 
   let aviso = '';
   const cp = cicloProm(), pp = periodoProm();
@@ -649,42 +937,125 @@ function pintarHistorial(){
   else if (ini.length >= 2 && pp > 7) aviso = 'Tu periodo dura en promedio ' + pp + ' días. Si dura más de 7 días con frecuencia, consúltalo con tu médico.';
   $('hAviso').innerHTML = aviso ? '<div class="warn">' + aviso + '</div>' : '';
 
+  const ins = analisis();
+  $('hInsights').innerHTML = ins.length ? ins.map(([i,t]) => '<div class="ins"><span>' + i + '</span><span>' + t + '</span></div>').join('')
+    : '<p class="empty">Aún no hay suficientes datos. Registra tus periodos y, por unos días, cómo te sientes (síntomas, ánimo, sueño). Con 2 ciclos Luna empieza a mostrarte tus patrones.</p>';
+
   const lc = $('hCiclos');
   if (!ini.length) lc.innerHTML = '<p class="empty">Aún no hay ciclos registrados.</p>';
   else {
-    lc.innerHTML = ini.slice().reverse().slice(0,12).map((s, idx, arr) => {
-      const pos = ini.indexOf(s), sig = ini[pos+1];
-      const largo = sig ? difDias(deIso(s), deIso(sig)) + ' días de ciclo' : 'Ciclo actual';
-      return '<div class="it"><div><b>' + fmtL(deIso(s)) + '</b><br><small>Periodo de ' + largoPeriodo(s) + ' días</small></div><small>' + largo + '</small></div>';
+    const filas = ini.slice().reverse().slice(0,12).map(s => {
+      const c = ci.find(x => x.ini === s), exc = data.excluidos.includes(s);
+      const largo = c ? c.largo + ' días de ciclo' : 'Ciclo actual';
+      return '<div class="it' + (exc ? ' excl' : '') + '"><div><b>' + fmtL(deIso(s)) + '</b><br><small>Periodo de ' + largoPeriodo(s) + ' días · ' + largo + (exc ? ' · excluido' : '') + '</small></div>' +
+        '<button class="mini" data-ex="' + s + '">' + (exc ? 'Incluir' : 'Excluir') + '</button></div>';
     }).join('');
+    lc.innerHTML = filas;
+    lc.querySelectorAll('[data-ex]').forEach(b => b.onclick = () => {
+      const s = b.dataset.ex, i = data.excluidos.indexOf(s);
+      if (i >= 0) data.excluidos.splice(i,1); else data.excluidos.push(s);
+      guardar(); pintarHistorial(); toast(i >= 0 ? 'Ciclo incluido de nuevo' : 'Ciclo excluido de tus promedios');
+    });
   }
+  pintarGrafico();
   pintarHistMetodo();
   pintarConteo('hSint', 'sintomas', 'Registra síntomas en el día a día para ver tus patrones.');
   pintarConteo('hAnimo', 'animos', 'Registra cómo te sientes para ver tu ánimo a lo largo del ciclo.');
 }
 function pintarConteo(cont, campo, vacio){
-  const cuenta = {}; let dias = 0;
-  Object.values(data.registros).forEach(r => { if ((r[campo]||[]).length) dias++; (r[campo]||[]).forEach(v => cuenta[v] = (cuenta[v]||0) + 1); });
+  const cuenta = {};
+  Object.values(data.registros).forEach(r => (r[campo]||[]).forEach(v => cuenta[v] = (cuenta[v]||0) + 1));
   const top = Object.entries(cuenta).sort((a,b)=>b[1]-a[1]).slice(0,6);
   if (!top.length){ $(cont).innerHTML = '<p class="empty">' + vacio + '</p>'; return; }
   const max = top[0][1];
   $(cont).innerHTML = top.map(([k,v]) => '<div class="it" style="display:block"><div style="display:flex;justify-content:space-between"><span>' + k + '</span><small>' + v + (v===1?' día':' días') + '</small></div><div class="bar"><i style="width:' + Math.round(v/max*100) + '%"></i></div></div>').join('');
 }
+
+/* ---------- GRÁFICOS ---------- */
+const FASES = ['Menstrual','Folicular','Fértil','Lútea'];
+function pintarGrafico(){
+  document.querySelectorAll('#gTabs button').forEach(b => b.classList.toggle('on', b.dataset.g === grafico));
+  const a = $('gArea');
+  if (grafico === 'ciclos') a.innerHTML = graficoCiclos();
+  else if (grafico === 'animo') a.innerHTML = graficoAnimo();
+  else a.innerHTML = graficoSintomas();
+}
+function graficoCiclos(){
+  const ci = ciclosInfo().slice(-8);
+  if (ci.length < 1) return '<p class="empty">Cuando registres al menos 2 periodos verás aquí la duración de cada ciclo.</p>';
+  const W = 320, H = 190, pl = 28, pb = 34, pt = 14, maxV = Math.max(40, ...ci.map(c => c.largo)), minV = 0;
+  const y = v => pt + (H - pt - pb) * (1 - (v - minV) / (maxV - minV));
+  const bw = Math.min(30, (W - pl - 10) / ci.length - 8);
+  let s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '">';
+  s += '<rect x="' + pl + '" y="' + y(35) + '" width="' + (W - pl - 4) + '" height="' + (y(21) - y(35)) + '" fill="var(--soft2)" rx="6"/>';
+  [0, 14, 28, 42].filter(v => v <= maxV).forEach(v => s += '<text x="' + (pl - 6) + '" y="' + (y(v) + 3) + '" font-size="9" text-anchor="end">' + v + '</text>');
+  const avg = cicloProm();
+  ci.forEach((c, i) => {
+    const x = pl + 10 + i * ((W - pl - 10) / ci.length), h = y(minV) - y(c.largo);
+    s += '<rect x="' + x + '" y="' + y(c.largo) + '" width="' + bw + '" height="' + h + '" rx="6" fill="' + (c.excluido ? 'var(--muted)' : 'var(--accent)') + '"' + (c.excluido ? ' opacity=".35"' : '') + '/>';
+    s += '<text x="' + (x + bw/2) + '" y="' + (y(c.largo) - 4) + '" font-size="10" font-weight="600" text-anchor="middle" style="fill:var(--ink)">' + c.largo + '</text>';
+    const d = deIso(c.ini); s += '<text x="' + (x + bw/2) + '" y="' + (H - pb + 14) + '" font-size="9" text-anchor="middle">' + d.toLocaleDateString('es-CO',{month:'short'}).replace('.','') + '</text>';
+  });
+  s += '<line x1="' + pl + '" x2="' + (W - 4) + '" y1="' + y(avg) + '" y2="' + y(avg) + '" stroke="var(--period)" stroke-width="1.5" stroke-dasharray="4 4"/>';
+  s += '</svg><div class="legend" style="margin-top:6px"><span><i style="background:var(--accent)"></i>Días de cada ciclo</span><span><i style="background:var(--period);height:3px;border-radius:2px"></i>Tu promedio: ' + avg + ' días</span><span><i style="background:var(--soft2);border-radius:3px"></i>Rango habitual 21–35</span></div><p class="small" style="margin-top:6px">Las barras grises son ciclos excluidos.</p>';
+  return s;
+}
+function porFase(fn){
+  const r = {}; FASES.forEach(f => r[f] = {dias:0, val:0});
+  Object.entries(data.registros).forEach(([s, reg]) => { const i = infoDia(s); if (!i) return; const v = fn(reg); if (v === null) return; r[i.fase].dias++; r[i.fase].val += v; });
+  return r;
+}
+function barrasFase(datos, etiqueta, color, vacio){
+  const total = FASES.reduce((a,f) => a + datos[f].dias, 0);
+  if (total < 3) return '<p class="empty">' + vacio + '</p>';
+  return FASES.map(f => {
+    const d = datos[f], p = d.dias ? Math.round(d.val / d.dias * 100) : 0;
+    return '<div class="it" style="display:block"><div style="display:flex;justify-content:space-between"><span>' + {'Menstrual':'🩸 Menstrual','Folicular':'🌱 Folicular','Fértil':'🌸 Fértil','Lútea':'🍂 Lútea (premenstrual)'}[f] + '</span><small>' + (d.dias ? p + '% ' + etiqueta : 'sin datos') + '</small></div><div class="bar"><i style="width:' + p + '%;background:' + color + '"></i></div></div>';
+  }).join('');
+}
+function graficoAnimo(){
+  const neg = porFase(r => (r.animos||[]).length ? ((r.animos||[]).some(v => NEGATIVOS.includes(v)) ? 1 : 0) : null);
+  const pos = porFase(r => (r.animos||[]).length ? ((r.animos||[]).some(v => POSITIVOS.includes(v)) ? 1 : 0) : null);
+  const v = 'Registra tu ánimo varios días para ver cómo cambia en cada fase.';
+  const a = barrasFase(pos, 'días buenos', 'var(--ok)', v);
+  if (a.includes('empty')) return a;
+  return '<div class="sub">Días con buen ánimo</div><div class="list">' + a + '</div><div class="sub">Días con ánimo difícil</div><div class="list">' + barrasFase(neg, 'días difíciles', 'var(--bad)', v) + '</div>';
+}
+function graficoSintomas(){
+  const cnt = {}; Object.values(data.registros).forEach(r => (r.sintomas||[]).forEach(v => cnt[v] = (cnt[v]||0)+1));
+  const top = Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,4).map(x => x[0]);
+  if (!top.length) return '<p class="empty">Registra síntomas para ver en qué fase aparecen más.</p>';
+  let s = '<p class="small" style="margin-bottom:8px">En qué fase aparecen tus síntomas más frecuentes.</p>';
+  top.forEach(sint => {
+    const r = {}; FASES.forEach(f => r[f] = 0); let n = 0;
+    Object.entries(data.registros).forEach(([d, reg]) => { if (!(reg.sintomas||[]).includes(sint)) return; const i = infoDia(d); if (!i) return; r[i.fase]++; n++; });
+    if (!n) return;
+    const col = {'Menstrual':'#E11D74','Folicular':'#0EA5E9','Fértil':'#8B5CF6','Lútea':'#F59E0B'};
+    s += '<div class="sub">' + sint + ' <span style="font-weight:400">(' + n + ')</span></div><div style="display:flex;height:14px;border-radius:8px;overflow:hidden;background:var(--line)">' +
+      FASES.map(f => r[f] ? '<i style="width:' + (r[f]/n*100) + '%;background:' + col[f] + '"></i>' : '').join('') + '</div>';
+  });
+  s += '<div class="legend"><span><i style="background:#E11D74"></i>Menstrual</span><span><i style="background:#0EA5E9"></i>Folicular</span><span><i style="background:#8B5CF6"></i>Fértil</span><span><i style="background:#F59E0B"></i>Lútea</span></div>';
+  return s;
+}
+
+/* ---------- INFORME ---------- */
 function informe(){
-  const ini = inicios(), l = largosCiclos();
+  const ini = inicios(), l = largosCiclos(), ci = ciclosInfo();
   const filas = ini.slice().reverse().slice(0,12).map(s => {
-    const pos = ini.indexOf(s), sig = ini[pos+1];
-    return '<tr><td>' + fmtL(deIso(s)) + '</td><td>' + largoPeriodo(s) + ' días</td><td>' + (sig ? difDias(deIso(s), deIso(sig)) + ' días' : 'En curso') + '</td></tr>';
+    const c = ci.find(x => x.ini === s);
+    return '<tr><td>' + fmtL(deIso(s)) + (data.excluidos.includes(s) ? ' (excluido)' : '') + '</td><td>' + largoPeriodo(s) + ' días</td><td>' + (c ? c.largo + ' días' : 'En curso') + '</td></tr>';
   }).join('') || '<tr><td colspan="3">Sin ciclos registrados</td></tr>';
   const cuenta = (campo) => { const c={}; Object.values(data.registros).forEach(r=>(r[campo]||[]).forEach(v=>c[v]=(c[v]||0)+1)); return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>k+' ('+v+')').join(', ') || 'Sin registros'; };
   const notas = Object.entries(data.registros).filter(([k,r])=>r.notas).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,10)
     .map(([k,r]) => '<tr><td>' + fmtL(deIso(k)) + '</td><td>' + esc(r.notas) + '</td></tr>').join('') || '<tr><td colspan="2">Sin notas</td></tr>';
+  const ins = analisis();
   $('informe').innerHTML =
     '<h1>Informe de ciclo menstrual</h1>' +
     '<div>' + (data.nombre ? 'Nombre: ' + esc(data.nombre) + ' · ' : '') + 'Generado el ' + fmtL(hoy()) + ' con Luna (LV Studio Apps)</div>' +
     '<h2>Resumen</h2><table><tr><th>Ciclo promedio</th><th>Periodo promedio</th><th>Ciclos registrados</th><th>Variación</th></tr>' +
     '<tr><td>' + (l.length ? cicloProm() + ' días' : 'Sin datos suficientes') + '</td><td>' + (ini.length ? periodoProm() + ' días' : '–') + '</td><td>' + l.length + '</td><td>' + (l.length>=2 ? (Math.max(...l)-Math.min(...l)) + ' días' : '–') + '</td></tr></table>' +
     '<h2>Últimos ciclos</h2><table><tr><th>Inicio del periodo</th><th>Duración del periodo</th><th>Duración del ciclo</th></tr>' + filas + '</table>' +
+    (ins.length ? '<h2>Patrones observados</h2><ul>' + ins.map(x => '<li>' + x[1] + '</li>').join('') + '</ul>' : '') +
     '<h2>Método anticonceptivo</h2><div>' + textoMetodo() + '</div>' +
     '<h2>Síntomas más frecuentes</h2><div>' + cuenta('sintomas') + '</div>' +
     '<h2>Ánimo registrado</h2><div>' + cuenta('animos') + '</div>' +
@@ -696,19 +1067,33 @@ function informe(){
 /* ---------- AJUSTES ---------- */
 function pintarAjustes(){
   $('aNombre').value = data.nombre || ''; $('aCiclo').value = data.ciclo; $('aPer').value = data.periodo;
+  $('aTema').value = data.tema || 'auto'; $('aAlias').value = data.alias || 'Luna';
   $('aPinEstado').textContent = data.pin ? 'El PIN está activo. Luna lo pedirá cada vez que la abras.' : 'Protege Luna con un PIN de 4 números.';
   $('aPin').textContent = data.pin ? 'Quitar PIN' : 'Activar PIN';
   const m = data.metodo;
   $('aMetodoTxt').textContent = m ? METODOS[m.tipo][1] + (m.nombre ? ' · ' + m.nombre : '') + ' · ' + frecTxt(m) : 'No has registrado ningún método.';
   $('aMetodo').textContent = m ? 'Editar método' : 'Agregar método';
   $('aMetodoQuitar').style.display = m ? 'block' : 'none';
+  pintarInstalar();
 }
+let promptInstalar = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); promptInstalar = e; pintarInstalar(); });
+function pintarInstalar(){
+  const standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone;
+  if (standalone){ $('instalarCard').style.display = 'none'; return; }
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  $('pasosInstalar').innerHTML = ios
+    ? '<li>Abre Luna en <b>Safari</b>.</li><li>Toca el botón <b>Compartir</b> (el cuadrito con la flecha hacia arriba).</li><li>Elige <b>Agregar a pantalla de inicio</b> y toca <b>Agregar</b>.</li>'
+    : '<li>Abre Luna en <b>Chrome</b>.</li><li>Toca el botón <b>Instalar Luna</b> de abajo, o el menú <b>⋮</b> → <b>Instalar app</b>.</li><li>Confirma con <b>Instalar</b>.</li>';
+  $('btnInstalar').style.display = promptInstalar ? 'block' : 'none';
+}
+$('btnInstalar').onclick = async () => { if (!promptInstalar) return; promptInstalar.prompt(); await promptInstalar.userChoice; promptInstalar = null; pintarInstalar(); };
 async function hash(t){
   try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('luna:' + t)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
   catch(e){ let h=0; for (const ch of 'luna:'+t) h = (h*31 + ch.charCodeAt(0)) | 0; return 'x' + h; }
 }
 function exportar(){
-  const blob = new Blob([JSON.stringify({app:'Luna', version:1, fecha: iso(hoy()), datos: data}, null, 2)], {type:'application/json'});
+  const blob = new Blob([JSON.stringify({app:'Luna', version:2, fecha: iso(hoy()), datos: data}, null, 2)], {type:'application/json'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'luna-copia-' + iso(hoy()) + '.json';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
   toast('Copia descargada');
@@ -720,7 +1105,7 @@ function importar(file){
       const j = JSON.parse(r.result), d = j.datos || j;
       if (!d || !Array.isArray(d.dias) || !d.ciclo) throw 0;
       confirmar('¿Restaurar esta copia?', 'Se reemplazarán los datos actuales de este celular por los de la copia del ' + (j.fecha || 'archivo') + '.', () => {
-        data = d; normalizar(); guardar(); pintarTodo(); toast('Copia restaurada');
+        data = d; normalizar(); guardar(); aplicarTema(); aplicarAlias(); pintarTodo(); toast('Copia restaurada');
       });
     } catch(e){ toast('Ese archivo no es una copia válida de Luna'); }
   };
@@ -739,7 +1124,7 @@ function armarTeclado(){
 function puntos(){ $('lDots').querySelectorAll('i').forEach((d,i)=>d.classList.toggle('f', i < pinBuf.length)); }
 function mostrarLock(modo){
   pinModo = modo; pinBuf = ''; pinPrimero = ''; puntos();
-  $('lTit').textContent = modo === 'abrir' ? 'Luna está protegida' : 'Crea tu PIN';
+  $('lTit').textContent = modo === 'abrir' ? (data.alias || 'Luna') + ' está protegida' : 'Crea tu PIN';
   $('lTxt').textContent = modo === 'abrir' ? 'Escribe tu PIN' : 'Escribe 4 números';
   $('lCancel').style.display = modo === 'abrir' ? 'none' : 'block';
   $('lock').classList.add('show');
@@ -822,7 +1207,6 @@ function racha(m){
   return n;
 }
 function cuandoTxt(dias){ return dias === 0 ? 'hoy' : dias === 1 ? 'mañana' : 'en ' + dias + ' días'; }
-
 function pintarMetodo(){
   const box = $('metodoCard'), m = data && data.metodo;
   if (!m){
@@ -896,13 +1280,13 @@ function descargarIcs(){
   const L = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//LV Studio//Luna//ES','CALSCALE:GREGORIAN','BEGIN:VEVENT',
     'UID:luna-' + Date.now() + '@lvstudio', 'DTSTAMP:' + f(new Date()) + 'T000000',
     'DTSTART:' + f(s) + 'T' + hh + mi + '00', 'DURATION:PT15M',
-    'SUMMARY:☾ Recordatorio Luna', 'DESCRIPTION:' + desc];
+    'SUMMARY:☾ Recordatorio ' + (data.alias || 'Luna'), 'DESCRIPTION:' + desc];
   if (rr) L.push('RRULE:' + rr);
-  L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:☾ Recordatorio Luna','TRIGGER:PT0M','END:VALARM');
-  if (m.frec !== 'diaria') L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:☾ Mañana tienes recordatorio de Luna','TRIGGER:-P1D','END:VALARM');
+  L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:☾ Recordatorio','TRIGGER:PT0M','END:VALARM');
+  if (m.frec !== 'diaria') L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:☾ Mañana tienes un recordatorio','TRIGGER:-P1D','END:VALARM');
   L.push('END:VEVENT','END:VCALENDAR');
   const blob = new Blob([L.join('\r\n')], {type:'text/calendar'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'luna-recordatorio.ics';
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'recordatorio.ics';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
   toast('Abre el archivo y toca «Agregar» en tu calendario');
 }
@@ -933,7 +1317,6 @@ function pintarHistMetodo(){
   }
   el.innerHTML = html;
 }
-
 function abrirMetodo(){
   const m = data.metodo || {tipo:'pastilla', nombre:'', frec:'diaria', anios:3, dias:30, descanso:false, fecha:iso(hoy()), hora:'20:00'};
   $('mTipo').value = m.tipo; $('mNombre').value = m.nombre || ''; $('mFrec').value = m.frec;
@@ -946,31 +1329,9 @@ function formMetodo(){
   $('mAniosF').style.display = f === 'anios' ? 'block' : 'none';
   $('mDiasF').style.display = f === 'dias' ? 'block' : 'none';
   $('mDescF').style.display = (f === 'diaria' || f === 'semanal') ? 'flex' : 'none';
-  $('mFechaF').parentElement.style.display = f === 'ninguna' ? 'none' : 'grid';
+  $('mFechaRow').style.display = f === 'ninguna' ? 'none' : 'grid';
   $('mFechaL').textContent = (f === 'diaria' || f === 'semanal') ? 'Fecha de inicio' : 'Última aplicación';
 }
-$('mTipo').onchange = () => {
-  const d = METODOS[$('mTipo').value]; $('mFrec').value = d[2]; if (d[3]) $('mAnios').value = d[3];
-  $('mDesc').checked = false; formMetodo();
-};
-$('mFrec').onchange = formMetodo;
-$('mCancelar').onclick = () => $('metodoSheet').classList.remove('show');
-$('mGuardar').onclick = () => {
-  const frec = $('mFrec').value, fecha = $('mFecha').value;
-  if (frec !== 'ninguna' && !fecha){ toast('Elige la fecha'); return; }
-  if (frec !== 'ninguna' && frec !== 'diaria' && frec !== 'semanal' && deIso(fecha) > hoy()){ toast('La última aplicación no puede ser una fecha futura'); return; }
-  const prev = data.metodo || {}, tipo = $('mTipo').value, mismo = prev.tipo === tipo;
-  data.metodo = {
-    tipo, nombre: $('mNombre').value.trim(), frec,
-    anios: Math.min(12, Math.max(1, parseInt($('mAnios').value) || 1)),
-    dias: Math.min(365, Math.max(1, parseInt($('mDias').value) || 30)),
-    descanso: $('mDesc').checked && (frec === 'diaria' || frec === 'semanal'),
-    fecha: fecha || iso(hoy()), hora: $('mHora').value || '20:00',
-    tomas: mismo ? (prev.tomas || []) : [], aplic: mismo ? (prev.aplic || []) : []
-  };
-  if (frec !== 'diaria' && frec !== 'semanal' && frec !== 'ninguna' && !data.metodo.aplic.includes(fecha)) data.metodo.aplic.push(fecha);
-  guardar(); $('metodoSheet').classList.remove('show'); pintarTodo(); pintarAjustes(); toast('Método guardado');
-};
 
 /* ---------- navegación ---------- */
 function irA(v){
@@ -994,14 +1355,27 @@ $('prev').onclick = () => { vista.setMonth(vista.getMonth()-1); pintarCalendario
 $('next').onclick = () => { vista.setMonth(vista.getMonth()+1); pintarCalendario(); };
 $('btnLlego').onclick = () => data && marcarLlego();
 $('btnTermino').onclick = () => data && marcarTermino();
+$('insightMas').onclick = () => irA('historial');
 $('dPrev').onclick = () => cambiarDia(-1);
 $('dNext').onclick = () => cambiarDia(1);
 $('dFecha').onchange = e => { const v = e.target.value; if (!v) return; if (deIso(v) > hoy()){ toast('Elige un día que ya pasó'); e.target.value = diaSel; return; } diaSel = v; cargarRegistro(); };
+$('aguaMenos').onclick = () => { agua = Math.max(0, agua-1); $('aguaVal').textContent = agua + (agua === 1 ? ' vaso' : ' vasos'); contar(); };
+$('aguaMas').onclick = () => { agua = Math.min(20, agua+1); $('aguaVal').textContent = agua + (agua === 1 ? ' vaso' : ' vasos'); contar(); };
+$('rPeso').oninput = contar;
 $('rGuardar').onclick = guardarRegistro;
 $('rBorrar').onclick = () => {
   if (!data.registros[diaSel]){ toast('Este día no tiene registro'); return; }
-  confirmar('¿Borrar el registro?', 'Se borrarán los síntomas, el ánimo y las notas del ' + fmtL(deIso(diaSel)) + '.', () => { delete data.registros[diaSel]; guardar(); cargarRegistro(); pintarInicio(); toast('Registro borrado'); });
+  confirmar('¿Borrar el registro?', 'Se borrará todo lo registrado el ' + fmtL(deIso(diaSel)) + ' (síntomas, ánimo, notas…). El periodo marcado se conserva.', () => { delete data.registros[diaSel]; guardar(); cargarRegistro(); pintarInicio(); toast('Registro borrado'); });
 };
+$('etiqOk').onclick = () => {
+  const t = $('etiqTxt').value.trim();
+  if (!t){ toast('Escribe un nombre'); return; }
+  const sel = seleccion($('rEtiquetas'));
+  if (!data.etiquetas.some(x => x.toLowerCase() === t.toLowerCase())) data.etiquetas.push(t);
+  sel.push(t); guardar(); armarEtiquetas(sel); $('etiqSheet').classList.remove('show'); contar();
+};
+$('etiqNo').onclick = () => $('etiqSheet').classList.remove('show');
+document.querySelectorAll('#gTabs button').forEach(b => b.onclick = () => { grafico = b.dataset.g; pintarGrafico(); });
 $('btnInforme').onclick = informe;
 $('aGuardar').onclick = () => {
   data.nombre = $('aNombre').value.trim();
@@ -1009,8 +1383,10 @@ $('aGuardar').onclick = () => {
   data.periodo = Math.min(10, Math.max(2, parseInt($('aPer').value) || 5));
   guardar(); pintarAjustes(); pintarInicio(); toast('Cambios guardados');
 };
+$('aTema').onchange = () => { data.tema = $('aTema').value; guardar(); aplicarTema(); };
+$('aAlias').onchange = () => { data.alias = $('aAlias').value; guardar(); aplicarAlias(); toast('Ahora la app se muestra como «' + data.alias + '»'); };
 $('aPin').onclick = () => {
-  if (data.pin) confirmar('¿Quitar el PIN?', 'Luna se abrirá sin pedir PIN.', () => { delete data.pin; guardar(); pintarAjustes(); toast('PIN desactivado'); });
+  if (data.pin) confirmar('¿Quitar el PIN?', 'La app se abrirá sin pedir PIN.', () => { delete data.pin; guardar(); pintarAjustes(); toast('PIN desactivado'); });
   else mostrarLock('crear');
 };
 $('aMetodo').onclick = () => abrirMetodo();
@@ -1019,10 +1395,29 @@ $('lCancel').onclick = () => $('lock').classList.remove('show');
 $('aExportar').onclick = exportar;
 $('aImportar').onclick = () => $('aArchivo').click();
 $('aArchivo').onchange = e => { if (e.target.files[0]) importar(e.target.files[0]); e.target.value = ''; };
-$('aBorrarTodo').onclick = () => confirmar('¿Borrar todos tus datos?', 'Se eliminarán tu periodo, tus registros y tu PIN de este celular. Te recomendamos descargar una copia antes.', () => {
+$('aBorrarTodo').onclick = () => confirmar('¿Borrar todos tus datos?', 'Se eliminarán tu periodo, tus registros, tu método y tu PIN de este celular. Te recomendamos descargar una copia antes.', () => {
   try { localStorage.removeItem(KEY); } catch(e){}
-  data = null; irA('inicio'); pintarInicio(); $('bienvenida').classList.add('show'); toast('Datos borrados');
+  data = null; aplicarTema(); aplicarAlias(); irA('inicio'); pintarInicio(); $('bienvenida').classList.add('show'); toast('Datos borrados');
 });
+$('mTipo').onchange = () => { const d = METODOS[$('mTipo').value]; $('mFrec').value = d[2]; if (d[3]) $('mAnios').value = d[3]; $('mDesc').checked = false; formMetodo(); };
+$('mFrec').onchange = formMetodo;
+$('mCancelar').onclick = () => $('metodoSheet').classList.remove('show');
+$('mGuardar').onclick = () => {
+  const frec = $('mFrec').value, fecha = $('mFecha').value;
+  if (frec !== 'ninguna' && !fecha){ toast('Elige la fecha'); return; }
+  if (frec !== 'ninguna' && frec !== 'diaria' && frec !== 'semanal' && deIso(fecha) > hoy()){ toast('La última aplicación no puede ser una fecha futura'); return; }
+  const prev = data.metodo || {}, tipo = $('mTipo').value, mismo = prev.tipo === tipo;
+  data.metodo = {
+    tipo, nombre: $('mNombre').value.trim(), frec,
+    anios: Math.min(12, Math.max(1, parseInt($('mAnios').value) || 1)),
+    dias: Math.min(365, Math.max(1, parseInt($('mDias').value) || 30)),
+    descanso: $('mDesc').checked && (frec === 'diaria' || frec === 'semanal'),
+    fecha: fecha || iso(hoy()), hora: $('mHora').value || '20:00',
+    tomas: mismo ? (prev.tomas || []) : [], aplic: mismo ? (prev.aplic || []) : []
+  };
+  if (frec !== 'diaria' && frec !== 'semanal' && frec !== 'ninguna' && !data.metodo.aplic.includes(fecha)) data.metodo.aplic.push(fecha);
+  guardar(); $('metodoSheet').classList.remove('show'); pintarTodo(); pintarAjustes(); toast('Método guardado');
+};
 $('btnEmpezar').onclick = () => {
   const u = $('inUltimo').value;
   const ciclo = Math.min(45, Math.max(20, parseInt($('inCiclo').value) || 28));
@@ -1030,6 +1425,7 @@ $('btnEmpezar').onclick = () => {
   if (!u){ toast('Elige la fecha de tu último periodo'); return; }
   if (deIso(u) > hoy()){ toast('La fecha no puede ser futura'); return; }
   data = { nombre: $('inNombre').value.trim(), ciclo, periodo: per, dias: [], registros: {} };
+  normalizar();
   for (let i=0;i<per;i++){ const d = sumar(deIso(u),i); if (d <= hoy()) data.dias.push(iso(d)); }
   guardar(); $('bienvenida').classList.remove('show'); pintarTodo();
 };
@@ -1037,8 +1433,9 @@ $('btnEmpezar').onclick = () => {
 /* ---------- arranque ---------- */
 armarTeclado();
 $('inUltimo').max = iso(hoy());
-if (data){ normalizar(); pintarTodo(); if (data.pin) mostrarLock('abrir'); }
-else { pintarInicio(); $('bienvenida').classList.add('show'); }
+if (data){ normalizar(); aplicarTema(); aplicarAlias(); pintarTodo(); if (data.pin) mostrarLock('abrir'); }
+else { aplicarTema(); pintarInicio(); $('bienvenida').classList.add('show'); }
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 </body>
 </html>
